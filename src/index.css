@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --morand-bg: #f0ece2;
+  --morand-text: #596e79;
+  --morand-accent: #c7b198;
+  --morand-highlight: #dfd3c3;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--morand-bg);
+  color: var(--morand-text);
+}
