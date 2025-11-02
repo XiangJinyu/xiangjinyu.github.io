@@ -17,7 +17,7 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-I am the CoFounder at [SophiaPro](https://www.sophiapro.ai/), where I spearhead the algorithm team in advancing the core capabilities of General Agents. Previously, I obtained my bachelor's degree in Applied Physics from Southwest Jiaotong University. My research interest primarily focuses on LLM Based Agents, with particular emphasis on Agent Self-Evolving, Self-Supervised Prompt Optimization, and Foundation Agents.
+I am the CoFounder at [SophiaPro](https://www.sophiapro.ai/), where I spearhead the algorithm team in advancing the core capabilities of General Agents. Previously, I obtained my bachelor's degree in Applied Physics from Southwest Jiaotong University. My research interest primarily focuses on LLM Based Agents, with particular emphasis on Agent Self-Evolving and Foundation Agents.
 
 I am also the Research Lead at [Agent Universe](https://github.com/Agent-Universe), leading team research on AI content reformulation and redistribution. Before that, I worked as a Researcher at [DeepWisdom](https://www.deepwisdom.ai/) on Agent Self-Optimization and Foundation Agent research.
 
@@ -28,7 +28,7 @@ Besides my work in AI, I am an [Independent Musician](https://y.qq.com/n/ryqq/si
 # 🔥 News
 - *2025.05* CoFounded SophiaPro, focusing on General Agents and Marketing Agent applications.
 - *2025.04* Participated in the [Foundation Agent Survey](https://arxiv.org/abs/2504.01990) V1, exploring cross-environment agents.
-- *2025.03* Proposed and built [OpenManus](https://github.com/FoundationAgents/OpenManus) with the team, achieving *50K+** Stars!
+- *2025.03* Proposed and built [OpenManus](https://github.com/FoundationAgents/OpenManus) with the team, achieving **50K+** Stars!
 - *2025.02* [Self-Supervised Prompt Optimization](https://arxiv.org/abs/2502.06855) was accepted by EMNLP 2025.
 - *2024.10* [AFLOW](https://openreview.net/forum?id=z5uVAKwmjf) was accepted by ICLR 2025 as an Oral Presentation (Top 1.8%).
 - *2024.08* Joined DeepWisdom as a Researcher, focusing on Agent Self-Optimization and Foundation Agent.
