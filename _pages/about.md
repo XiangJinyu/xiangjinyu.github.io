@@ -17,35 +17,58 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-I am a PhD student at the [Hong Kong University of Science and Technology (Guangzhou)](https://www.hkust-gz.edu.cn/), starting from Fall 2024. I am honored to be supervised by Professor [Yuyu Luo](https://luoyuyu.vip/). Previously, I obtained my bachelor's degree from the [School of Information](http://info.ruc.edu.cn/), [Renmin University of China](https://www.ruc.edu.cn/). My research interest primarily focuses on LLM Based Agents, with a particular emphasis on reasoning ablity and the paradigm of constructing agents that are adaptable to multiple environments. 
+I am the CoFounder at [SophiaPro](https://www.sophiapro.ai/), where I spearhead the algorithm team in advancing the core capabilities of General Agents. Previously, I obtained my bachelor's degree in Applied Physics from Southwest Jiaotong University. My research interest primarily focuses on LLM Based Agents, with particular emphasis on Agent Self-Evolving, Self-Supervised Prompt Optimization, and Foundation Agents.
 
-Currently, I'm leading the research team of [MetaGPT](https://www.deepwisdom.ai/). We are hiring research interns (Agent, RL, Optimization) and research engineer interns. Feel free to email me to discuss potential collaboration opportunities. 
+I am also the Research Lead at [Agent Universe](https://github.com/Agent-Universe), leading team research on AI content reformulation and redistribution. Before that, I worked as a Researcher at [DeepWisdom](https://www.deepwisdom.ai/) on Agent Self-Optimization and Foundation Agent research.
 
-At the same time, i am building a community called [MindForge](https://github.com/Mind4Forge), aimed at bringing together researchers and engineers interested in intelligence to explore autonomous and efficient agents across different environments. ***If you are interested, feel free to reach out to me***.
-
-You can find my CV here: [didi's Curriculum Vitae](https://www.overleaf.com/read/jnhkgyqbtscx#ebbfa7).
+Besides my work in AI, I am an [Independent Musician](https://y.qq.com/n/ryqq/singer/003uqHad2JLREo) on Tencent Music, creating instrumental music, Traditional Chinese style (Gufeng), and Electronic music, with over 2 million plays and 1k+ followers.
 
 <span class='anchor' id='news'></span>
 
 # 🔥 News
-- *2025.04* We finalize the [Foundation Agent Survey](https://arxiv.org/abs/2504.01990) V1, Let's talk about cross-environment agents.
-- *2025.03* We proposed [OpenManus](https://github.com/FoundationAgents/OpenManus), we get **46.1K** Stars in two months!
-- *2025.02* [AFLOW](https://openreview.net/forum?id=z5uVAKwmjf) was accepted by ICLR 2025 as an Oral Presentation (Top 1.8%)
-- *2024.08* I joined the DialLab at HKUST(GZ) as a PhD student, advised by Professor Yuyu Luo.
-- *2024.06* MathAI won third place in the 2024 Alibaba Global Mathematics Competition AI Challenge, thanks to SuperCarryMan!
-- *2024.02* Participated in my first academic paper, delighted to collaborate with the MetaGPT community to publish [Data Interpreter](https://arxiv.org/abs/2402.18679).
-- *2023.12* Participated in the Baidu Hackathon with my homies and won second place.
+- *2025.05* CoFounded SophiaPro, focusing on General Agents and Marketing Agent applications.
+- *2025.04* Participated in the [Foundation Agent Survey](https://arxiv.org/abs/2504.01990) V1, exploring cross-environment agents.
+- *2025.03* Proposed and built [OpenManus](https://github.com/FoundationAgents/OpenManus) with the team, achieving *50K+** Stars!
+- *2025.02* [Self-Supervised Prompt Optimization](https://arxiv.org/abs/2502.06855) was accepted by EMNLP 2025.
+- *2024.10* [AFLOW](https://openreview.net/forum?id=z5uVAKwmjf) was accepted by ICLR 2025 as an Oral Presentation (Top 1.8%).
+- *2024.08* Joined DeepWisdom as a Researcher, focusing on Agent Self-Optimization and Foundation Agent.
+- *2024.06* MathAI won second place in the 2024 Alibaba Global Mathematics Competition AI Challenge (Top 1%, 2/563).
+- *2024.02* Started leading research at Agent Universe on AI content reformulation.
 
 <span class='anchor' id='publications'></span>
 # 📝 Selected Publications
 <div class='paper-box'><div class='paper-box-image'><div><div class="badge">ICLR 2025 Oral</div><img src='images/aflow.png' alt="sym" width="100%"></div></div>
 <div class='paper-box-text' markdown="1">
 
-[AFlow: Automating Agentic Workflow Generation](https://arxiv.org/abs/2410.10762) [[X]](https://x.com/didiforx/status/1890242001817464935)
+[AFlow: Automating Agentic Workflow Generation](https://openreview.net/forum?id=z5uVAKwmjf)
 
-**Jiayi Zhang**, Jinyu Xiang, Zhaoyang Yu, Fengwei Teng, Xionghui Chen, Jiaqi Chen, Mingchen Zhuge, Xin Cheng, Sirui Hong, Jinlin Wang, Bingnan Zheng, Bang Liu, Yuyu Luo, Chenglin Wu
+Jiayi Zhang\*, **Jinyu Xiang\***, Zhaoyang Yu, Fengwei Teng, Xionghui Chen, Jiaqi Chen, Mingchen Zhuge, Xin Cheng, Sirui Hong, Jinlin Wang, Bingnan Zheng, Bang Liu, Yuyu Luo, Chenglin Wu
 
-We introduces AFlow, an automated framework that reformulates workflow optimization as a search problem over code-represented workflows, using Monte Carlo Tree Search to efficiently explore and refine workflows through code modification and execution feedback.
+AFlow introduces an automated framework that reformulates workflow optimization as a search problem over code-represented workflows, using Monte Carlo Tree Search to efficiently explore and refine workflows through code modification and execution feedback.
+
+</div>
+</div>
+
+<div class='paper-box'><div class='paper-box-image'><div><div class="badge">EMNLP 2025</div><img src='images/spo.png' alt="sym" width="100%"></div></div>
+<div class='paper-box-text' markdown="1">
+
+[Self-Supervised Prompt Optimization](https://arxiv.org/abs/2502.06855)
+
+**Jinyu Xiang\***, Jiayi Zhang\*, Zhaoyang Yu, Xinbing Liang, Fengwei Teng, Jinhao Tu, Fashen Ren, Xiangru Tang, Sirui Hong, Chenglin Wu, Yuyu Luo
+
+We propose a self-supervised framework for prompt optimization that enables language models to automatically refine prompts through iterative feedback and learning.
+
+</div>
+</div>
+
+<div class='paper-box'><div class='paper-box-image'><div><div class="badge">50K+ Stars</div><img src='images/openmanus.png' alt="sym" width="100%"></div></div>
+<div class='paper-box-text' markdown="1">
+
+[OpenManus: An Open-Source Framework for Building General AI Agents](https://github.com/FoundationAgents/OpenManus)
+
+Xinbing Liang\*, **Jinyu Xiang\***, Zhaoyang Yu, Jiayi Zhang, Sirui Hong
+
+OpenManus is a minimalist Agent framework that articulates the minimal structural units for Agent design. We completed this project in just three hours, which garnered 35k stars within its first week of release.
 
 </div>
 </div>
@@ -53,24 +76,11 @@ We introduces AFlow, an automated framework that reformulates workflow optimizat
 <div class='paper-box'><div class='paper-box-image'><div><div class="badge">Arxiv 2025</div><img src='images/foundationagent-survey.png' alt="sym" width="100%"></div></div>
 <div class='paper-box-text' markdown="1">
 
-[Advances And Challenges In Foundation Agents](https://arxiv.org/abs/2504.01990) [[X]](https://x.com/BangL93/status/1908128095967592485)
+[Advances And Challenges In Foundation Agents](https://arxiv.org/abs/2504.01990)
 
-Bang Liu†, Xinfeng Li†, **Jiayi Zhang†**, Jinlin Wang†, Tanjin He†, Sirui Hong†, Hongzhang Liu†, Shaokun Zhang†, Kaitao Song†, Kunlun Zhu†, more than 30 authors , Jian Pei, Qiang Yang, Xiaoliang Qi, Chenglin Wu
+Bang Liu, Xinfeng Li, Jiayi Zhang, Jinlin Wang, Tanjin He, Sirui Hong, Hongzhang Liu, Shaokun Zhang, Kaitao Song, Kunlun Zhu, Yuheng Cheng, Suyuchen Wang, Xiaoqiang Wang, Yuyu Luo, Haibo Jin, Peiyan Zhang, Ollie Liu, Jiaqi Chen, Huan Zhang, Zhaoyang Yu, Haochen Shi, Boyan Li, Dekun Wu, Fengwei Teng, Xiaojun Jia, Jiawei Xu, **Jinyu Xiang**, et al.
 
-We introduce Foundation Agent Survey, let's talk about more on "Fundamental intelligent unit with universal understanding, cognition, and action capabilities that can operate in any environments and collaborate to form collective intelligence".
-
-</div>
-</div>
-
-<div class='paper-box'><div class='paper-box-image'><div><div class="badge">46K Stars</div><img src='images/openmanus.png' alt="sym" width="100%"></div></div>
-<div class='paper-box-text' markdown="1">
-
-[OpenManus](https://github.com/FoundationAgents/OpenManus) [[X]](https://x.com/didiforx/status/1897675038972883408) 
-
-OpenManus Team
-
-We introduce OpenManus, an open-source project for enhancing public's understanding of agents. 
-
+A comprehensive survey on Foundation Agents with universal understanding, cognition, and action capabilities that can operate in any environments and collaborate to form collective intelligence.
 
 </div>
 </div>
@@ -78,51 +88,27 @@ We introduce OpenManus, an open-source project for enhancing public's understand
 <span class='anchor' id='educations'></span>
 
 # 📖 Educations
-- *2024.08 - Present*, The Hong Kong University of Science and Technology (Guangzhou), Information Hub.
-- *2020.09 - 2024.06*, Renmin University of China, Information School.
+- *2020.09 - 2024.06*, Southwest Jiaotong University, Applied Physics, Bachelor.
 
 <span class='anchor' id='internships'></span>
 
-# 💻 Internships
-- *2024.7 - Present*, Research Intern, [DeepWisdom](https://www.deepwisdom.ai/), China.
-- *2024.6 - 2025.2*, Research Intern, [Thin Red Line](https://www.thinredline.com.cn/), China.
-- *2023.12 - 2024.5*, Research Intern, [Lenovo Research AI Lab](https://research.lenovo.com/webapp/view/index.html), China.
-- *2023.08 - 2023.12*, Algorithm intern, [ZhiPuAI](https://www.zhipuai.cn/) ,China.
-- *2023.07 - 2023.08*, Algorithm intern,[CYOU](https://www.changyou.com/cu.shtml), China.
+# 💻 Job Experience
+- *2025.05 - Present*, CoFounder, SophiaPro, China.
+- *2024.08 - 2025.05*, Researcher, [DeepWisdom](https://www.deepwisdom.ai/), China.
+- *2024.02 - Present*, Research Lead, Agent Universe, China.
+- *2019.02 - Present*, Independent Musician, [Tencent Music](https://y.qq.com/n/ryqq/singer/003uqHad2JLREo), China.
 
 <span class='anchor' id='competitions'></span>
 
 # 🎯 Competitions and Side Projects
-- *2024.6*, 2024 Alibaba Global Mathematics Competition AI Challenge, Top 1% (3/563), Team Leader
-- *2024.4*, MetaGPT Android Environment, Core Contributor
-- *2023.12*, Baidu & FounderPark AGI Hackathon, Second Place Award, Team Leader
-- *2023.9*, MetaGPT Mini Hackathon, Best Contributor
-- *2023.8*, AWS GenAl Talent Program, 2 out of 4 awards, Team member
-
-<span class='anchor' id='honors'></span>
-
-# 🎖 Honors and Awards
-- *2022.10* The First Class Academic Progress Scholarship, Renmin University of China. 
-- *2022.10* The First Class Social Work and Leadership Scholarship, Renmin University of China.
-- *2023.10* The First Class Outstanding Student Leadership Scholarship, Renmin University of China.
-
-<span class='anchor' id='leaderships'></span>
-
-# 👥 Leaderships
-- *2023.07 - 2024.06*, RUC 36th Student Union Committee, Member.
-- *2023.04 - 2024.03*, RUC 45th School of Information Student Union, Chairman.
-- *2022.07 - 2023.07*, RUC lth Mingli Academy Student Union, Chairman.
+- *2025.03*, [OpenManus](https://github.com/FoundationAgents/OpenManus), Github 50K+ stars, Founder. Proposed and assembled a team to recreate Manus functionality, completing the project in just three hours, which garnered 35k stars within its first week.
+- *2024.07*, [Zhihu AI Social Experiment](https://www.zhihu.com/people/-qw-28), Author. Conducted a social experiment by creating a fully autonomous AI account on Zhihu that posted content for a month without human intervention or detection.
+- *2024.06*, [2024 Alibaba Global Mathematics Competition AI Challenge](https://github.com/XiangJinyu/Math-Multi-Agent), Top 1% (2/563), Author. Developed the MathAI multi-agent system to tackle Olympiad level math problems, reaching the finals and placing second.
+- *2024.05*, [AI Research Weekly](https://github.com/Agent-Universe/AI-Paper), Author. Led a team in developing an automated system that crawls Hugging Face for new AI research papers weekly, utilizing LLMs to automatically categorize papers by domain and generate comprehensive summaries.
 
 <span class='anchor' id='invited-talks'></span>
 
-# 🔈 invited-talks
-- *2025.5*, International Conference on General Artificial Intelligence, Advances And Challenges In Foundation Agents, Conf Org.
-- *2025.3*, Jiaxian Workshop, Towards Foundation Agents, HUAWEI ICT
-- *2025.3*, Guest Talk, Towards Foundation Agents, Where we are, and where we go?, University of Sydney
-- *2025.3*, ThinkZo Workshop, From OpenManus to Foundation Agents, HUAWEI
-- *2024.10*, GraphTalk: Automating Effective Agentic Workflow Generation, Ant Group
-
-<span class='anchor' id='services'></span>
-
-# 💁 Services
-- Program Committee / Conference Reviewer: ICML 2025, AAAI 2025, ICLR2026, ICML 2025 MAS Workshop, COLM 2025 AIA Workshop, NeurIPS 2025 SEA Workshop
+# 🔈 Invited Talks
+- *2025.9*, INCLUSION·Conference on the Bund Roundtable: [Industry Observations from a Gen-Z Agent Application Entrepreneur](https://www.inclusionconf.com/liveJianjieDetail2025?uuid=F_yaL4r9Ui)
+- *2025.7*, Tencent: [The Second Half of AI: Defining Problems is More Important Than Solving Them](https://mp.weixin.qq.com/s/QnYXW_4Xi3T9WNsbfPKQ0Q)
+- *2025.4*, Tencent: [The Explosive Rise of Agents: Unlimited Application Space?](https://news.qq.com/rain/a/RLV2025031800406900)

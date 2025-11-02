@@ -6,9 +6,9 @@
 # `jekyll serve`. If you change this file, please restart the server process.
 
 # Site Settings
-title                    : "Jiayi Zhang"
+title                    : "Jinyu Xiang"
 description              : ""
-repository               : "didiforgithub/Jiayi-Zhang.github.io"
+repository               : "xiangjinyu/xiangjinyu.github.io"
 google_scholar_stats_use_cdn : true
 
 # google analytics
@@ -21,14 +21,14 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 
 # Site Author
 author:
-  name             : "Jiayi Zhang"
+  name             : "Jinyu Xiang"
   avatar           : "images/avatar.jpg"
-  bio              : "HKUST(GZ)"
-  location         : "Guangzhou, China"
+  bio              : "CoFounder at SophiaPro"
+  location         : "Beijing, China"
   employer         :
   pubmed           : 
-  googlescholar    : "https://scholar.google.cz/citations?user=VATBrqgAAAAJ"
-  email            : "didi4goooogle@gmail.com"
+  googlescholar    : "https://scholar.google.com/citations?user=NJv62qoAAAAJ&hl=en"
+  email            : "xiangjy2001@gmail.com"
   researchgate     :  # e.g., "https://www.researchgate.net/profile/yourprofile"
   uri              :
   bitbucket        :
@@ -37,7 +37,7 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           : "didiforgithub"
+  github           : "XiangJinyu"
   google_plus      :
   keybase          :
   instagram        :
@@ -51,7 +51,7 @@ author:
   stackoverflow    : # http://stackoverflow.com/users/123456/username
   steam            :
   tumblr           :
-  twitter          : "didiforx"
+  twitter          : "CosmoJinyu"
   vine             :
   weibo            : 
   xing             :
