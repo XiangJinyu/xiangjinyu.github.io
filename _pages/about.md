@@ -17,7 +17,7 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-I am the CoFounder at [SophiaPro](https://www.sophiapro.ai/), where I spearhead the algorithm team in advancing the core capabilities of General Agents. Previously, I obtained my bachelor's degree in Applied Physics from Southwest Jiaotong University. My research interest primarily focuses on LLM Based Agents, with particular emphasis on Agent Self-Evolving and Foundation Agents.
+I am the CoFounder at [Amplift](https://www.amplift.ai/), where I spearhead the algorithm team in advancing the core capabilities of General Agents. Previously, I obtained my bachelor's degree in Applied Physics from Southwest Jiaotong University. My research interest primarily focuses on LLM Based Agents, with particular emphasis on Agent Self-Evolving and Foundation Agents.
 
 I am also the Research Lead at [Agent Universe](https://github.com/Agent-Universe), leading team research on AI content reformulation and redistribution. Before that, I worked as a Researcher at [DeepWisdom](https://www.deepwisdom.ai/) on Agent Self-Optimization and Foundation Agent research.
 
@@ -26,7 +26,7 @@ Besides my work in AI, I am an [Independent Musician](https://y.qq.com/n/ryqq/si
 <span class='anchor' id='news'></span>
 
 # 🔥 News
-- *2025.05* CoFounded SophiaPro, focusing on General Agents and Marketing Agent applications.
+- *2025.05* CoFounded Amplift, focusing on General Agents and Marketing Agent applications.
 - *2025.04* Participated in the [Foundation Agent Survey](https://arxiv.org/abs/2504.01990) V1, exploring cross-environment agents.
 - *2025.03* Proposed and built [OpenManus](https://github.com/FoundationAgents/OpenManus) with the team, achieving **50K+** Stars!
 - *2025.02* [Self-Supervised Prompt Optimization](https://arxiv.org/abs/2502.06855) was accepted by EMNLP 2025.
@@ -93,7 +93,7 @@ A comprehensive survey on Foundation Agents with universal understanding, cognit
 <span class='anchor' id='internships'></span>
 
 # 💻 Job Experience
-- *2025.05 - Present*, CoFounder, SophiaPro, China.
+- *2025.06 - Present*, CoFounder, Amplift, China.
 - *2024.08 - 2025.05*, Researcher, [DeepWisdom](https://www.deepwisdom.ai/), China.
 - *2024.02 - Present*, Research Lead, Agent Universe, China.
 - *2019.02 - Present*, Independent Musician, [Tencent Music](https://y.qq.com/n/ryqq/singer/003uqHad2JLREo), China.
@@ -109,6 +109,7 @@ A comprehensive survey on Foundation Agents with universal understanding, cognit
 <span class='anchor' id='invited-talks'></span>
 
 # 🔈 Invited Talks
+- *2025.10*, Weibo AI Deep Talk #27: [Is AI Entrepreneurship a Traffic Password?](https://weibo.com/5777227559/5220273607413293)
 - *2025.9*, INCLUSION·Conference on the Bund Roundtable: [Industry Observations from a Gen-Z Agent Application Entrepreneur](https://www.inclusionconf.com/liveJianjieDetail2025?uuid=F_yaL4r9Ui)
 - *2025.7*, Tencent: [The Second Half of AI: Defining Problems is More Important Than Solving Them](https://mp.weixin.qq.com/s/QnYXW_4Xi3T9WNsbfPKQ0Q)
 - *2025.4*, Tencent: [The Explosive Rise of Agents: Unlimited Application Space?](https://news.qq.com/rain/a/RLV2025031800406900)
