@@ -10,6 +10,7 @@ const blogCollection = defineCollection({
     author: z.string().default('Jinyu Xiang'),
     image: z.string().optional(),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 

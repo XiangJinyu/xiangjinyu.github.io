@@ -21,8 +21,8 @@ const { Content: AboutContent } = await aboutContent[0].compiledContent ? aboutC
 // 读取主页数据
 const homepageData = await getEntry('data', 'homepage');
 
-// 读取文章
-const allPosts = await getCollection('posts');
+// 读取文章（排除草稿）
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
 const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 // 读取出版物
