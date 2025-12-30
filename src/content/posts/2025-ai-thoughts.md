@@ -26,11 +26,11 @@ When we talk about Agent Learning, people often get obsessed with building all k
 
 But few people stop and think: **what is the Agent actually learning?**
 
-Is it rote-memorizing rules in a particular environment (Overfitting to rules), or is it truly extracting **meta-capabilities (Meta-Capability)** from these trajectories that can generalize across tasks?
+Is it rote-memorizing rules in a particular environment (Overfitting to rules), or is it truly extracting **meta-capabilities** from these trajectories that can generalize across tasks?
 
 In the past we often discussed **Learning from Env** and **Learning from Human** separately. But this dichotomy may be an artificial split.
 
-When we define the product as infrastructure (Infra), every click, every piece of feedback, every preference signal from users is shaping, in real time, the "world" the Agent lives in. In this sense, **users are essentially part of the environment (Environment)**—they are the most active and most uncertain environmental variables in the system.
+When we define the product as infrastructure (Infra), every click, every piece of feedback, every preference signal from users is shaping, in real time, the "world" the Agent lives in. In this sense, **users are essentially part of the environment**—they are the most active and most uncertain environmental variables in the system.
 
 Therefore, Learning from Human is actually a special case of Learning from a Dynamic Environment—except that this environmental variable happens to be humans.
 
@@ -66,15 +66,15 @@ From a physics perspective, current Agents face two fundamental constraints: **f
 When designing Agent products, there are two important points worth paying attention to:
 
 1.  **Traverse space**: let the Agent flow freely across different domains, different databases, and different software ecosystems, breaking down information silos. This is where most Agent products are focusing today (Tool Use & Integration).
-2.  **Traverse time**: give the Agent long-horizon causal reasoning capabilities. For example, what result will a decision the Agent makes today produce one month later? Can the Agent use this delayed feedback (Delayed Feedback) to revise its strategy from a month ago?
+2.  **Traverse time**: give the Agent long-horizon causal reasoning capabilities. For example, what result will a decision the Agent makes today produce one month later? Can the Agent use this delayed feedback to revise its strategy from a month ago?
 
 Most Agents today focus only on the "traversing space" part, busy integrating various APIs. But an Agent that "traverses time" can track causality over long spans and optimize over long cycles.
 
 ### Theoretical model: the recursive isomorphism of Agent Learning
 
-We can try to formalize the learning process of an Agent as a **recursive isomorphism (Recursive Isomorphism)** structure. That is: **"learning" itself is also a process in which an Agent solves problems**.
+We can try to formalize the learning process of an Agent as a **recursive isomorphism** structure. That is: **"learning" itself is also a process in which an Agent solves problems**.
 
-Under this framework, the optimizer (Optimizer) and the executor (Executor) follow exactly the same operating pattern: the **Observation $\to$ Action** loop. The only difference is the "data types" they process.
+Under this framework, the optimizer and the executor follow exactly the same operating pattern: the **Observation $\to$ Action** loop. The only difference is the "data types" they process.
 
 We can define a generic Agent policy function $\pi$, at level $k$:
 
@@ -116,7 +116,7 @@ Here $\text{History}(\cdot)$ denotes some aggregation or summary of the lower-le
 
 The essence of an Agent can be abstracted as a **general-purpose translator** across different modalities.
 
-Although AI technology looks dazzling, the entities we deal with are actually limited: **Text (words), Audio (audio), Image (images), Code (code), Video (video), File (files)** ...
+Although AI technology looks dazzling, the entities we deal with are actually limited: **Text (words), Audio, Image, Code, Video, File** ...
 
 Many AI products that impress us are just recombinations of conversions among these entities:
 - **ChatGPT**：Text → Text
@@ -132,17 +132,17 @@ Process-wise, the vast majority of Agent products follow a shared paradigm: **La
 
 ### A cluster view: recursion, activation, and the coordination tax of Multi-Agent
 
-Although the initial architecture should remain concise, Multi-Agent System (MAS) still has value. The key is understanding **how it works and when it works**, and its core lies in **recursion (Recursion)** and **activation (Activation)**.
+Although the initial architecture should remain concise, Multi-Agent System (MAS) still has value. The key is understanding **how it works and when it works**, and its core lies in **recursion** and **activation**.
 
-1.  **Recursion (Recursion)**: this is the extreme extension of "Budget". If a Main Agent’s capability ceiling is 30 steps (Step), then by calling a Sub-Agent (also with 30-step capability), we can theoretically expand the task-execution depth to $30 \times 30 = 900$ steps. A three-layer structure can even continue to recurse into $30 \times 30 \times 30$. The reason deeper recursion has not been applied at scale is not that it is theoretically impossible, but that it is constrained by multiple realities: the model’s Context and stability are insufficient to support such long-range causal chains; a large number of external data sources and tool ecosystems have not been effectively connected; the latency and cost brought by long-chain execution are hard to accept commercially; and the difficulty of debugging and interpretability makes production deployment too risky.
-2.  **Activation (Activation)**: this enhances “professionalism”. By injecting specific System Prompt, Context, and Action Space (toolset) into a Sub-Agent, or loading different fine-tuned weights, we are effectively “activating” a domain expert.
+1.  **Recursion**: this is the extreme extension of "Budget". If a Main Agent’s capability ceiling is 30 steps, then by calling a Sub-Agent (also with 30-step capability), we can theoretically expand the task-execution depth to $30 \times 30 = 900$ steps. A three-layer structure can even continue to recurse into $30 \times 30 \times 30$. The reason deeper recursion has not been applied at scale is not that it is theoretically impossible, but that it is constrained by multiple realities: the model’s Context and stability are insufficient to support such long-range causal chains; a large number of external data sources and tool ecosystems have not been effectively connected; the latency and cost brought by long-chain execution are hard to accept commercially; and the difficulty of debugging and interpretability makes production deployment too risky.
+2.  **Activation**: this enhances “professionalism”. By injecting specific System Prompt, Context, and Action Space (toolset) into a Sub-Agent, or loading different fine-tuned weights, we are effectively “activating” a domain expert.
 
-However, MAS also introduces a non-negligible **coordination tax (Coordination Tax)**.
+However, MAS also introduces a non-negligible **coordination tax**.
 
 The coordination tax refers to the cost (tokens, time, precision) consumed when Agents pass information, align intent, and wait for responses.
 
-- **Hierarchical structure (Hierarchical)**: if we adopt a tree structure of superiors and subordinates, each Agent communicates only with its direct superior/subordinate. The number of communications per task is related to the depth of the tree, and overall complexity is controllable.
-- **Mesh / all-to-all structure (Mesh/All-to-All)**: if $n$ Agents are allowed to freely talk pairwise, the number of potential communication channels grows to $O(n^2)$, and coordination costs rise sharply.
+- **Hierarchical structure**: if we adopt a tree structure of superiors and subordinates, each Agent communicates only with its direct superior/subordinate. The number of communications per task is related to the depth of the tree, and overall complexity is controllable.
+- **Mesh / all-to-all structure**: if $n$ Agents are allowed to freely talk pairwise, the number of potential communication channels grows to $O(n^2)$, and coordination costs rise sharply.
 
 Excessive coordination tax often throws the system into chaos and inefficiency. Therefore, **balancing "recursion gains" and "coordination tax" in architecture design is the key to designing an efficient MAS.**
 
@@ -179,8 +179,8 @@ Building Agent products is astonishingly similar to building open-world games. T
 Traditional MVC architecture is being reconstructed.
 
 - **Controller -> Agent Core**: the previously passive, hard-coded controller is being replaced by an intelligent “brain” that can plan autonomously and call tools.
-- **Model -> Capabilities**: the model layer is no longer just data storage; it evolves into a toolset (Tools) that provides capabilities and data.
-- **View -> Generative Interface**: the view layer is undergoing the most radical change. It is no longer static UI rendering, but evolves into a **Generative Interface (generative interaction interface)**, where the interface is fluid and dynamically generated based on the Agent’s intent and the user’s immediate needs, and different teams are trying different approaches to such interactions.
+- **Model -> Capabilities**: the model layer is no longer just data storage; it evolves into a toolset that provides capabilities and data.
+- **View -> Generative Interface**: the view layer is undergoing the most radical change. It is no longer static UI rendering, but evolves into a **Generative Interface**, where the interface is fluid and dynamically generated based on the Agent’s intent and the user’s immediate needs, and different teams are trying different approaches to such interactions.
 
 ### A game between two kinds of “product managers”
 
@@ -202,12 +202,12 @@ When evaluating a new AI idea, I repeatedly use this ruler: are we building a pr
 
 ### The behavior design formula for AI products: B = MAP
 
-Borrowing BJ Fogg’s behavior model (Fogg Behavior Model), I believe AI product design also follows the formula $B = MAP$:
-**Behavior (behavior) = Motivation (motivation) × Ability (ability) × Prompt (prompt)**
+Borrowing BJ Fogg's Behavior Model, I believe AI product design also follows the formula $B = MAP$:
+**Behavior = Motivation × Ability × Prompt**
 
-1.  **Motivation (user motivation)**: why does the user want to use your AI at this moment? Is it to fix an urgent Bug (high motivation), or just to kill time and chat a bit (low motivation)? AI products often fall into the trap of “showing off,” while ignoring the user’s most basic motivations—saving effort, saving time, or getting emotional comfort.
-2.  **Ability (user ability)**: this corresponds to **simplicity (Simplicity)**. Many AI products currently demand too much from users (e.g., requiring complex Prompts). A great product should **grant users ability**, not **consume users’ ability**. If using your product requires users to first study a “prompt engineering guide,” then Ability is too low. Ideally, lower the operational threshold to near zero, so users feel they have become stronger.
-3.  **Prompt (product prompt)**: the guidance, buttons, or notifications the product provides at the right moment (Context), reminding users “you can use AI to solve this problem now.”
+1.  **Motivation**: why does the user want to use your AI at this moment? Is it to fix an urgent Bug (high motivation), or just to kill time and chat a bit (low motivation)? AI products often fall into the trap of “showing off,” while ignoring the user’s most basic motivations—saving effort, saving time, or getting emotional comfort.
+2.  **Ability**: this corresponds to **simplicity**. Many AI products currently demand too much from users (e.g., requiring complex Prompts). A great product should **grant users ability**, not **consume users’ ability**. If using your product requires users to first study a “prompt engineering guide,” then Ability is too low. Ideally, lower the operational threshold to near zero, so users feel they have become stronger.
+3.  **Prompt**: the guidance, buttons, or notifications the product provides at the right moment (Context), reminding users “you can use AI to solve this problem now.”
 
 The task of an AI product manager is: when Motivation (M) is sufficient, maximize users’ Ability (A), and provide precise Prompts (P) to trigger the behavior.
 
@@ -231,7 +231,7 @@ But if we zoom out, a successful AI product has massive users, and tens of thous
 
 **To iterate an AI system, focus on the evolutionary trend of the whole population.** 
 
-Individuals often pursue extreme performance on specific tasks (Overfitting), while the key to population evolution is **generalization (Generalization)** and **transfer (Transfer)**. What we need to think about is:
+Individuals often pursue extreme performance on specific tasks (Overfitting), while the key to population evolution is **generalization** and **transfer**. What we need to think about is:
 - How can the experience an Agent learns in task A be abstracted and transferred to a completely different task B?
 - How can knowledge in the system be accumulated and shared like civilizational inheritance, rather than dissipating when a session ends?
 - How can we design mechanisms so that this “civilization” automatically emerges higher intelligence from massive interactions, instead of relying on engineers to manually patch every Bug?
@@ -239,10 +239,10 @@ Individuals often pursue extreme performance on specific tasks (Overfitting), wh
 ### Startup survival in the cracks: finding a new balance of compute
 
 AI startups are in an awkward “in-between”:
-- **Move toward the model layer (Model Layer)**: the deeper you go, the more you face a head-on fight with tech giants (Google, OpenAI, Meta) in compute, data, and talent. This is a capital-intensive game.
-- **Move toward the workflow layer (Workflow Layer)**: the higher you go, the more you resemble a traditional SaaS. While avoiding the giants’ direct firepower, you fall into incumbent competition with mature software vendors, and AI’s added value is easily diluted.
+- **Move toward the model layer**: the deeper you go, the more you face a head-on fight with tech giants (Google, OpenAI, Meta) in compute, data, and talent. This is a capital-intensive game.
+- **Move toward the workflow layer**: the higher you go, the more you resemble a traditional SaaS. While avoiding the giants’ direct firepower, you fall into incumbent competition with mature software vendors, and AI’s added value is easily diluted.
 
-To survive in the cracks, it’s not only necessary to find a unique niche; more importantly, it’s necessary to find a new balance between **Offline (offline) and Online (online) compute**.
+To survive in the cracks, it’s not only necessary to find a unique niche; more importantly, it’s necessary to find a new balance between **Offline and Online compute**.
 
 We are used to equating Offline Compute with Training, and Online Compute with Inference. But for Agent products, this division is too narrow.
 
@@ -262,7 +262,7 @@ This means **building a truly universal Reward Model is almost impossible**. Ali
 
 ### The gradient of reward and the religion within
 
-What people pursue is often not the absolute value of Reward (e.g., 100 yuan), but the **gradient of Reward** (the sense of growth from having no money to having money). It is exactly this sense of hope (Hope) that “things are getting better,” i.e., **the n-th derivative of the Reward Function being positive**, that drives humans forward.
+What people pursue is often not the absolute value of Reward (e.g., 100 yuan), but the **gradient of Reward** (the sense of growth from having no money to having money). It is exactly this sense of hope that "things are getting better," i.e., **the n-th derivative of the Reward Function being positive**, that drives humans forward.
 
 We can use an **intuitive analogy** (rather than a strict mathematical model) to describe this "sense of hope":
 
@@ -275,10 +275,10 @@ Here $R(t)$ is the current Reward state, and $w_n$ are decreasing weight coeffic
 However, growth in the physical world always has limits. When growth slows down or even stagnates (the gradient returns to zero), people feel pain and confusion.
 
 At that time, humans often save themselves in two ways:
-1.  **Rewiring the Reward Function (Rewiring Reward Function)**: proactively revise the objective variable (Objective Variable) being optimized. Rather than simply pursuing indicators in the external physical world with diminishing marginal returns (such as money), shift the value anchor to spiritual or moral dimensions. For example, Stoicism (Stoicism) re-encodes uncontrollable negative feedback (pain) from the outside world into a positive value signal (tempering) through cognitive reframing (Cognitive Reframing), thereby achieving the self-consistency and robustness of the Reward mechanism.
-2.  **Exploring inward (Latent Space Exploration)**: no longer rely on sparse feedback from the physical world, but turn inward to find satisfaction in the Latent Space of the spiritual world. By roaming and recombining within some high-dimensional feature space, construct an endless stream of intrinsic rewards (Intrinsic Reward).
+1.  **Rewiring the Reward Function**: proactively revise the objective variable being optimized. Rather than simply pursuing indicators in the external physical world with diminishing marginal returns (such as money), shift the value anchor to spiritual or moral dimensions. For example, Stoicism re-encodes uncontrollable negative feedback (pain) from the outside world into a positive value signal (tempering) through cognitive reframing, thereby achieving the self-consistency and robustness of the Reward mechanism.
+2.  **Exploring inward**: no longer rely on sparse feedback from the physical world, but turn inward to find satisfaction in the Latent Space of the spiritual world. By roaming and recombining within some high-dimensional feature space, construct an endless stream of intrinsic rewards.
 
-From a computational perspective, this may explain the inevitability of the evolution of religion and philosophy: **they construct an optimization objective with an Infinite Horizon, and build a feedback mechanism in Latent Space that can continuously generate Dense Intrinsic Reward (dense intrinsic reward).**
+From a computational perspective, this may explain the inevitability of the evolution of religion and philosophy: **they construct an optimization objective with an Infinite Horizon, and build a feedback mechanism in Latent Space that can continuously generate Dense Intrinsic Reward.**
 
 # Conclusion
 
