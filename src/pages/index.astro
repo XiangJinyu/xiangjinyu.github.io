@@ -1,0 +1,506 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { marked } from 'marked';
+
+// 配置 marked 用于行内解析
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+});
+
+// 辅助函数：解析 Markdown 为 HTML
+function parseMarkdown(text: string): string {
+  return marked.parseInline(text);
+}
+
+// 读取 About Me 内容
+const aboutContent = await Astro.glob('../about.md');
+const { Content: AboutContent } = await aboutContent[0].compiledContent ? aboutContent[0] : { Content: () => null };
+
+// 读取主页数据
+const homepageData = await getEntry('data', 'homepage');
+
+// 读取文章
+const allPosts = await getCollection('posts');
+const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// 读取出版物
+const publications = await getCollection('publications');
+const sortedPublications = publications.sort((a, b) => a.data.order - b.data.order);
+
+// 格式化日期
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+}
+---
+
+<Layout title="Jinyu Xiang">
+    <!-- About Me Section -->
+    <section class="hero">
+        <span class="anchor" id="about-me"></span>
+        <div class="about-header">
+            <div class="avatar">
+                <img src="/images/avatar.jpg" alt="Jinyu Xiang" />
+            </div>
+            <div class="intro">
+                <h1>Jinyu Xiang</h1>
+                <p class="tagline">CoFounder at Amplift · AI Agent Researcher · Musician</p>
+                <div class="social-links">
+                    <a href="mailto:xiangjy2001@gmail.com" title="Email">Email</a>
+                    <a href="https://github.com/XiangJinyu" title="GitHub">GitHub</a>
+                    <a href="https://twitter.com/CosmoJinyu" title="Twitter">Twitter</a>
+                    <a href="https://scholar.google.com/citations?user=NJv62qoAAAAJ&hl=en" title="Google Scholar">Scholar</a>
+                </div>
+            </div>
+        </div>
+        <div class="about-content">
+            {aboutContent[0] && (
+                <aboutContent[0].Content />
+            )}
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="section">
+        <span class="anchor" id="news"></span>
+        <h2>🔥 News</h2>
+        <ul class="news-list">
+            {homepageData?.data.news?.map(item => (
+                <li>
+                    <span class="date">{item.date}</span>
+                    <span set:html={parseMarkdown(item.content)} />
+                </li>
+            ))}
+        </ul>
+    </section>
+
+    <!-- Publications Section -->
+    <section class="section">
+        <span class="anchor" id="publications"></span>
+        <h2>📝 Selected Publications</h2>
+        
+        {sortedPublications.map(async (pub) => {
+            const { Content } = await pub.render();
+            return (
+                <div class="publication">
+                    <div class="pub-image">
+                        <img src={pub.data.image} alt={pub.data.title} />
+                        <span class="badge">{pub.data.badge}</span>
+                    </div>
+                    <div class="pub-content">
+                        <h3><a href={pub.data.url}>{pub.data.title}</a></h3>
+                        <p class="authors" set:html={parseMarkdown(pub.data.authors)} />
+                        <div class="description">
+                            <Content />
+                        </div>
+                    </div>
+                </div>
+            );
+        })}
+    </section>
+
+    <!-- Educations Section -->
+    <section class="section">
+        <span class="anchor" id="educations"></span>
+        <h2>📖 Educations</h2>
+        <ul class="timeline-list">
+            {homepageData?.data.educations?.map(item => (
+                <li>
+                    <span class="date">{item.period}</span>
+                    {item.institution}, {item.degree}.
+                </li>
+            ))}
+        </ul>
+    </section>
+
+    <!-- Job Experience Section -->
+    <section class="section">
+        <span class="anchor" id="internships"></span>
+        <h2>💻 Job Experience</h2>
+        <ul class="timeline-list">
+            {homepageData?.data.jobs?.map(item => (
+                <li>
+                    <span class="date">{item.period}</span>
+                    {item.title}, {item.url ? <a href={item.url}>{item.company}</a> : item.company}, China.
+                </li>
+            ))}
+        </ul>
+    </section>
+
+    <!-- Competitions Section -->
+    <section class="section">
+        <span class="anchor" id="competitions"></span>
+        <h2>🎯 Competitions and Side Projects</h2>
+        <ul class="timeline-list">
+            {homepageData?.data.projects?.map(item => (
+                <li>
+                    <span class="date">{item.date}</span>
+                    <a href={item.url}>{item.title}</a>, <span set:html={parseMarkdown(item.description)} />
+                </li>
+            ))}
+        </ul>
+    </section>
+
+    <!-- Invited Talks Section -->
+    <section class="section">
+        <span class="anchor" id="invited-talks"></span>
+        <h2>🔈 Invited Talks</h2>
+        <ul class="timeline-list">
+            {homepageData?.data.talks?.map(item => (
+                <li>
+                    <span class="date">{item.date}</span>
+                    <a href={item.url}>{item.title}</a>
+                </li>
+            ))}
+        </ul>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="section">
+        <span class="anchor" id="blog"></span>
+        <h2>📚 Recent Blog Posts</h2>
+        <ul class="blog-list">
+            {sortedPosts.slice(0, 5).map(post => (
+                <li class="blog-item">
+                    <span class="date mono-font">{formatDate(post.data.date)}</span>
+                    <div>
+                        <h3><a href={`/blog/${post.slug}`}>{post.data.title}</a></h3>
+                        <p class="abstract">{post.data.abstract}</p>
+                        <div class="tags">
+                            {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
+                        </div>
+                    </div>
+                </li>
+            ))}
+        </ul>
+        <div class="view-all">
+            <a href="/blog">View all posts →</a>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    /* Hero / About Section */
+    .hero {
+        max-width: var(--container-width);
+        margin: 3rem auto 4rem;
+        padding: 0 1.5rem;
+    }
+
+    .about-header {
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .avatar {
+        flex-shrink: 0;
+    }
+
+    .avatar img {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--border-color);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .intro h1 {
+        font-size: 2.5rem;
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+    }
+
+    .social-links a {
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        padding: 0.3rem 0.6rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+
+    .social-links a:hover {
+        color: var(--accent-color);
+        border-color: var(--accent-color);
+    }
+    
+    .about-content :global(p) {
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        line-height: 1.8;
+    }
+
+    .about-content :global(a) {
+        color: var(--accent-color);
+        text-decoration: none;
+        border-bottom: 1px solid var(--accent-color);
+    }
+
+    .about-content :global(a:hover) {
+        color: var(--text-primary);
+        border-bottom-color: var(--text-primary);
+    }
+
+    /* Section Styles */
+    .section {
+        max-width: var(--container-width);
+        margin: 0 auto 5rem;
+        padding: 0 1.5rem;
+    }
+
+    .section h2 {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid var(--text-primary);
+        padding-bottom: 0.5rem;
+    }
+
+    .anchor {
+        display: block;
+        position: relative;
+        top: -80px;
+        visibility: hidden;
+    }
+
+    /* News List */
+    .news-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .news-list li {
+        margin-bottom: 1rem;
+        padding-left: 0;
+        font-size: 1.05rem;
+        line-height: 1.7;
+    }
+
+    .news-list :global(a) {
+        color: var(--accent-color);
+        text-decoration: none;
+    }
+
+    .news-list :global(a:hover) {
+        border-bottom: 1px solid var(--accent-color);
+    }
+
+    .news-list :global(strong) {
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .date {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        color: var(--accent-color);
+        font-weight: 600;
+        margin-right: 1rem;
+    }
+
+    /* Timeline List (for Educations, Jobs, etc.) */
+    .timeline-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .timeline-list li {
+        margin-bottom: 1.5rem;
+        font-size: 1.05rem;
+        line-height: 1.7;
+    }
+
+    .timeline-list a {
+        color: var(--accent-color);
+        text-decoration: none;
+    }
+
+    .timeline-list a:hover {
+        border-bottom: 1px solid var(--accent-color);
+    }
+
+    /* Publications */
+    .publication {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        padding-bottom: 3rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .pub-image {
+        position: relative;
+    }
+
+    .pub-image img {
+        width: 100%;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .badge {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        background: var(--accent-color);
+        color: white;
+        padding: 0.3rem 0.7rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+    }
+
+    .pub-content h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.8rem;
+        font-weight: 600;
+    }
+
+    .pub-content h3 a {
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .pub-content h3 a:hover {
+        color: var(--accent-color);
+    }
+
+    .authors {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.8rem;
+        font-style: italic;
+    }
+
+    .authors :global(strong) {
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .description :global(p) {
+        font-size: 1rem;
+        color: var(--text-primary);
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* Blog List */
+    .blog-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .blog-item {
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+        padding-bottom: 2.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .blog-item h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .blog-item h3 a {
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .blog-item h3 a:hover {
+        color: var(--accent-color);
+    }
+
+    .abstract {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.6;
+    }
+
+    .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        background: #f0f0f0;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        color: var(--text-secondary);
+    }
+
+    .view-all {
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .view-all a {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        color: var(--accent-color);
+        text-decoration: none;
+        border-bottom: 1px solid var(--accent-color);
+        padding-bottom: 2px;
+    }
+
+    .view-all a:hover {
+        color: var(--text-primary);
+        border-bottom-color: var(--text-primary);
+    }
+
+    @media (max-width: 768px) {
+        .about-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .avatar img {
+            width: 120px;
+            height: 120px;
+        }
+
+        .intro h1 {
+            font-size: 2rem;
+        }
+
+        .social-links {
+            justify-content: center;
+        }
+
+        .publication {
+            grid-template-columns: 1fr;
+        }
+
+        .blog-item {
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
+    }
+</style>

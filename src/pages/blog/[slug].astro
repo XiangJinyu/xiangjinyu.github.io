@@ -1,0 +1,170 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('posts');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout title={entry.data.title}>
+    <div class="container article-container">
+        <header class="article-header">
+            <div class="meta">
+                <span class="mono-font date">{entry.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()}</span>
+                <div class="tags">
+                    {entry.data.tags.map(tag => <span class="tag">{tag}</span>)}
+                </div>
+            </div>
+            <h1>{entry.data.title}</h1>
+            <p class="abstract">{entry.data.abstract}</p>
+        </header>
+        
+        <article class="content">
+            <Content />
+        </article>
+        
+        <div class="back-link">
+             <a href="/">← Back to Index</a>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .article-container {
+        margin-top: 4rem;
+        margin-bottom: 6rem;
+        max-width: 800px; /* 文章页更窄一点，便于阅读 */
+    }
+
+    .article-header {
+        margin-bottom: 4rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 2rem;
+    }
+
+    .meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .date {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    
+    .tags {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        background: #f0f0f0;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        color: var(--text-secondary);
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+
+    .abstract {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        font-style: italic;
+    }
+
+    /* 文章内容样式 */
+    .content :global(h2) {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .content :global(h3) {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        margin-top: 2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .content :global(p) {
+        margin-bottom: 1.5rem;
+        font-size: 1.05rem;
+    }
+    
+    .content :global(ul), .content :global(ol) {
+        margin-bottom: 1.5rem;
+        padding-left: 1.5rem;
+    }
+    
+    .content :global(li) {
+        margin-bottom: 0.5rem;
+    }
+
+    /* --- 学术表格样式 (Three-line Table) --- */
+    .content :global(table) {
+        width: 100%; /* 移动端还是需要全宽 */
+        max-width: 100%; /* 防止溢出 */
+        border-collapse: collapse;
+        margin: 2.5rem 0;
+        font-size: 0.9rem;
+        font-family: 'Inter', sans-serif;
+        /* 如果列数少，不强制拉伸可能更好看，可以试着把 width: 100% 改为 auto，
+           但为了整齐划一，通常保持 100% 比较稳妥。
+           或者我们可以让表格内容本身不要太分散。
+        */
+    }
+
+    .content :global(th), .content :global(td) {
+        text-align: left; /* 核心：内容左对齐 */
+        padding: 0.8rem 1rem 0.8rem 0.5rem; /* 右侧多留点 padding，增加呼吸感 */
+    }
+
+    .content :global(th) {
+        border-top: 2px solid var(--text-primary);
+        border-bottom: 1px solid var(--text-primary);
+        font-weight: 600;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .content :global(td) {
+        color: var(--text-primary);
+        border-bottom: 1px solid #eee;
+    }
+    
+    /* 表格最后一行加粗底线 */
+    .content :global(tr:last-child td) {
+        border-bottom: 2px solid var(--text-primary);
+    }
+
+    /* 公式样式调整 */
+    .content :global(.katex-display) {
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 1rem 0;
+        margin: 1rem 0;
+    }
+    
+    .back-link {
+        margin-top: 4rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+    }
+</style>
+

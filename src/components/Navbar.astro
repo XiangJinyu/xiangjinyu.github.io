@@ -1,0 +1,76 @@
+---
+// 导航组件
+---
+<header>
+    <nav class="nav-container">
+        <a href="/" class="logo">
+            <span></span> Jinyu Xiang
+        </a>
+        <div class="nav-links">
+            <a href="/#about-me">About</a>
+            <a href="/#news">News</a>
+            <a href="/#publications">Publications</a>
+            <a href="/blog">Blog</a>
+        </div>
+    </nav>
+</header>
+
+<style>
+    header {
+        padding: 2rem 0;
+        position: sticky;
+        top: 0;
+        background: rgba(252, 251, 249, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 100;
+        border-bottom: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .nav-container {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.6rem; /* 1.5 -> 1.8 -> 1.6 (平衡点) */
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.7rem; /* 间距微调 */
+    }
+    
+    .logo span {
+        display: inline-block;
+        width: 10px; /* 回复到 10px，更精致 */
+        height: 10px;
+        background-color: var(--accent-color);
+        border-radius: 50%;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2.5rem;
+    }
+
+    .nav-links a {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    
+    .nav-links a:hover {
+        color: var(--text-primary);
+    }
+
+    @media (max-width: 768px) {
+        .nav-links { display: none; }
+    }
+</style>
+

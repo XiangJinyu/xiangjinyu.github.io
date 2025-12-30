@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+// 导入本地字体
+import '@fontsource/inter/300.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource/playfair-display/400.css';
+import '@fontsource/playfair-display/600.css';
+import '@fontsource/playfair-display/700.css';
+import '@fontsource/playfair-display/400-italic.css';
+
+// KaTeX CSS
+import 'katex/dist/katex.min.css';
+
+interface Props {
+	title: string;
+    description?: string;
+}
+
+const { title, description = "Jinyu Xiang's Research Blog - Exploring AI Agents, Self-Evolution, and Foundation Models." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+
+		<title>{title}</title>
+	</head>
+	<body>
+        <Navbar />
+		<main>
+            <slot />
+        </main>
+        <Footer />
+	</body>
+</html>
+

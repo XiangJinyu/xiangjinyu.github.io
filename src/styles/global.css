@@ -1,0 +1,64 @@
+/* --- 设计系统 (Design System) --- */
+:root {
+    /* 颜色：暖色调学术风 */
+    --bg-paper: #fcfbf9;      /* 纸张背景色 */
+    --bg-card: #ffffff;       /* 纯白卡片 */
+    --text-primary: #1a1a1a;  /* 近乎黑 */
+    --text-secondary: #5f5f5f;/* 深灰 */
+    --accent-color: #d94e28;  /* 陶土红 */
+    --border-color: #e5e5e5;
+    
+    /* 字体 */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    
+    /* 间距 */
+    --container-width: 1000px;
+    --spacing-unit: 1rem;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-paper);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, .serif-font {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* 等宽字体类，用于营造"数据/实验"感 */
+.mono-font {
+    font-family: var(--font-mono);
+    letter-spacing: -0.03em;
+}
+
+a { text-decoration: none; color: inherit; transition: color 0.2s; }
+a:hover { color: var(--accent-color); }
+
+/* 基础布局工具类 */
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.section-label {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    display: block;
+    opacity: 0.8;
+}
+

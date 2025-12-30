@@ -1,0 +1,150 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+}
+---
+
+<Layout title="Blog - Jinyu Xiang">
+    <div class="container blog-page">
+        <header class="page-header">
+            <h1>Blog</h1>
+            <p>Thoughts on AI Agents, Self-Evolution, and Foundation Models.</p>
+        </header>
+
+        <ul class="research-list">
+            {sortedPosts.map(post => (
+                <li class="research-item">
+                    <div class="item-date mono-font">{formatDate(post.data.date)}</div>
+                    <div class="item-content">
+                        <h3><a href={`/blog/${post.slug}`}>{post.data.title}</a></h3>
+                        <p class="item-abstract">
+                            {post.data.abstract}
+                        </p>
+                        <div class="item-tags">
+                            {post.data.tags.map(tag => (
+                                <span class="tag">{tag}</span>
+                            ))}
+                        </div>
+                    </div>
+                </li>
+            ))}
+        </ul>
+    </div>
+</Layout>
+
+<style>
+    .blog-page {
+        margin-top: 4rem;
+        margin-bottom: 6rem;
+    }
+
+    .page-header {
+        margin-bottom: 4rem;
+        border-bottom: 2px solid var(--text-primary);
+        padding-bottom: 1.5rem;
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .page-header p {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+    }
+
+    .research-list {
+        list-style: none;
+        border-top: 1px solid var(--text-primary);
+    }
+
+    .research-item {
+        border-bottom: 1px solid var(--border-color);
+        padding: 2.5rem 0;
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 2rem;
+        transition: all 0.3s;
+    }
+
+    .research-item:hover {
+        background-color: rgba(0,0,0,0.015);
+        padding-left: 1rem;
+        padding-right: 1rem;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        border-radius: 4px;
+    }
+
+    .item-date {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        padding-top: 0.4rem;
+        opacity: 0.8;
+    }
+
+    .item-content h3 {
+        font-size: 1.6rem;
+        margin-bottom: 0.8rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    .item-content h3 a {
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .item-content h3 a:hover {
+        color: var(--accent-color);
+    }
+
+    .item-abstract {
+        color: var(--text-secondary);
+        font-size: 1.05rem;
+        max-width: 700px;
+        margin-bottom: 1.2rem;
+        font-weight: 300;
+    }
+
+    .item-tags {
+        display: flex;
+        gap: 0.8rem;
+    }
+
+    .tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        border: 1px solid #d1d1d1;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        color: var(--text-secondary);
+        transition: all 0.2s;
+        text-transform: uppercase;
+    }
+
+    .research-item:hover .tag {
+        border-color: var(--text-primary);
+        color: var(--text-primary);
+    }
+
+    @media (max-width: 768px) {
+        .research-item {
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+            padding: 2rem 0;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+
