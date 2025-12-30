@@ -1,125 +1,124 @@
 ---
-title: "2025 年终杂谈：关于Agent的思考"
+title: "End-of-2025 Reflections: Thoughts on Agents"
 date: 2025-12-31
-abstract: "围绕 Agent Learning/Evolving、AI 产品的方法论、行业竞争与长期壁垒，以及人如何在不确定中重构“奖励”，展开的一篇年终杂谈。"
+abstract: "An end-of-year reflection centered on Agent Learning/Evolving, methodologies for AI products, industry competition and long-term moats, and how people rewire “rewards” amid uncertainty."
 tags: ["Agent"]
 author: "Jinyu Xiang"
-featured: false
-draft: true
+featured: true
 ---
 
-# 引言
+# Introduction
 
-投身创业已有半年的时间，深度参与产品迭代的同时，也一直在Research的一线关注大家的工作，带团队的同学做一些探索，这个过程中记录了许多零散的思考，年终了把它们做了一些整理，不一定都对，但先记下来再说。
+I’ve been all-in on building a startup for half a year now. While deeply involved in product iteration, I’ve also stayed on the front lines of Research, tracking everyone’s work and leading the team to explore a few directions. Along the way I recorded many scattered thoughts; at year’s end I organized them a bit. They may not all be right, but I’ll write them down first and see.
 
 > **TL;DR**
-> - **Agent 在"学什么"比"怎么学"更重要**：很多工作在卷 Pipeline，但更关键的是提炼能跨任务泛化的元能力，而不是对规则的过拟合。
-> - **Human 不是评审者，而是环境的一部分**：Learning from Human 可以视为 Learning from a Dynamic Environment 的特例，产品交互本身在塑造世界。
-> - **"学习"与"执行"递归同构**：优化者观测执行者轨迹、输出参数更新，遵循相同的 ReAct 范式——学任务和做任务本质同构。
-> - **Budget 是产品变量**：从 1 到 100+ 的步数/成本/延迟，决定了 Agent 的行为模式；同一需求在不同预算下应该有不同解法。
-> - **长期壁垒来自元能力与迭代回路**：当模型趋于公共基础设施，竞争关键在"制造能力的能力"（自举、速度、创新管线）。
+> - **For Agents, "what to learn" matters more than "how to learn"**: a lot of work is racing on Pipelines, but what matters more is distilling meta-capabilities that generalize across tasks, rather than overfitting to rules.
+> - **Humans are not reviewers, but part of the environment**: Learning from Human can be seen as a special case of Learning from a Dynamic Environment; product interaction itself is shaping the world.
+> - **"Learning" and "execution" are recursively isomorphic**: the optimizer observes the executor’s trajectories and outputs parameter updates, following the same ReAct paradigm—learning tasks and doing tasks are essentially isomorphic.
+> - **Budget is a product variable**: from 1 to 100+ steps/cost/latency determines the Agent’s behavior patterns; the same need should have different solutions under different budgets.
+> - **Long-term moats come from meta-capabilities and iteration loops**: as models become public infrastructure, the key competition is in the "capability to manufacture capabilities" (bootstrapping, speed, innovation pipelines).
 
-## 一、关于 Agent 的思考
+## I. Thoughts on Agents
 
-### AI 到底在学什么？
+### What is AI actually learning?
 
-当我们谈论 Agent Learning 时，大家往往沉迷于构建各种复杂的 Pipeline，设计精妙的反馈机制，试图从 Agent 之前的轨迹中榨取价值。这是 "How" 的层面，也是目前 Research 最卷的领域。
+When we talk about Agent Learning, people often get obsessed with building all kinds of complex Pipelines, designing ingenious feedback mechanisms, trying to squeeze value out of the Agent’s previous trajectories. This is the "How" layer, and also the most intensely competed area in Research right now.
 
-但很少有人停下来思考：**Agent 到底在学什么？**
+But few people stop and think: **what is the Agent actually learning?**
 
-它是在死记硬背某种特定环境下的规则（Overfitting to rules），还是真的从这些轨迹中提取出了能够跨任务泛化的**元能力（Meta-Capability）**？
+Is it rote-memorizing rules in a particular environment (Overfitting to rules), or is it truly extracting **meta-capabilities (Meta-Capability)** from these trajectories that can generalize across tasks?
 
-过去我们常把 **Learning from Env** 和 **Learning from Human** 分开讨论。但这种二分法可能是一种人为的割裂。
+In the past we often discussed **Learning from Env** and **Learning from Human** separately. But this dichotomy may be an artificial split.
 
-当我们将产品定义为基础设施（Infra）时，用户的每一次点击、每一条反馈、每一个偏好信号，都在实时地塑造着 Agent 所处的"世界"。从这个意义上说，**用户本质上就是环境（Environment）的一部分**，他们是系统中最活跃、最具不确定性的环境变量。
+When we define the product as infrastructure (Infra), every click, every piece of feedback, every preference signal from users is shaping, in real time, the "world" the Agent lives in. In this sense, **users are essentially part of the environment (Environment)**—they are the most active and most uncertain environmental variables in the system.
 
-因此，Learning from Human 其实是 Learning from a Dynamic Environment 的特例——只不过这个环境变量恰好是人类。
+Therefore, Learning from Human is actually a special case of Learning from a Dynamic Environment—except that this environmental variable happens to be humans.
 
-更进一步的问题是：**为什么要学这些东西？** 我们构建数据集、设计奖励函数，本质上是在定义 Agent 的价值观和能力边界。如果 "What"（学习目标）本身是偏差的，那么再完美的 "How"（学习方法）也只能让 Agent 在错误的道路上越跑越远。
+An even further question is: **why learn these things?** When we build datasets and design reward functions, we are essentially defining the Agent’s values and the boundary of its capabilities. If the "What" (learning objective) itself is biased, then no matter how perfect the "How" (learning method) is, it can only make the Agent run farther and farther down the wrong road.
 
 ### Less is more
 
-在 Agent 和算法的设计中，我看到许多工作在堆砌复杂度——设计错综复杂的 Multi-Agent 拓扑，构建冗长的 Workflow，仿佛结构越复杂，性能就越强。
+In the design of Agents and algorithms, I’ve seen a lot of work piling on complexity—designing intricate Multi-Agent topologies, constructing long Workflows, as if the more complex the structure, the stronger the performance.
 
-但我的观点始终未变：**一个真正健壮的复杂系统，往往是从极简的结构中"生长"出来的（Emergence），而不是通过预设的复杂性堆出来的。**
+But my view has remained the same: **a truly robust complex system often "grows" (Emergence) out of an extremely simple structure, rather than being stacked up through preconceived complexity.**
 
-当然，这并非绝对的教条——操作系统和数据库等成熟的工程系统往往是精心设计的产物。但对于当前阶段的 Agent 系统而言，我们对任务空间和交互模式的理解还远未成熟，过早地硬编码复杂结构反而会限制系统的适应性。
+Of course, this is not an absolute dogma—mature engineering systems like operating systems and databases are often the product of careful design. But for Agents at the current stage, our understanding of the task space and interaction patterns is still far from mature; hard-coding complex structures too early will instead limit the system’s adaptability.
 
-因此，我们不应试图在初始阶段就以上帝视角规定所有的交互路径。预先假定的复杂结构往往带来的是脆弱性，而非性能的线性提升。在探索阶段，简单的规则演化出复杂的行为，这才是 Agent 系统设计的务实之道。
+Therefore, we shouldn’t try to dictate all interaction paths from a god’s-eye view at the very beginning. Pre-assumed complex structures often bring fragility, not linear gains in performance. In the exploration stage, letting simple rules evolve into complex behaviors—that is the pragmatic way to design Agent systems.
 
-### Agent 的 Budget 设计
+### Designing an Agent’s Budget
 
-我们可以把 Chatbot 理解为 Budget 为 1 step 的特殊 Agent：它只有一次回复的机会，且动作空间仅限于文本生成。
+We can understand a Chatbot as a special Agent with a Budget of 1 step: it only has one chance to respond, and its action space is limited to text generation.
 
-而一个通用的 Agent，其 Max Steps（Budget）可能是 100 steps 甚至更多。Budget的不同，直接决定了任务执行的深度与广度（区别是质量，时间，成本）。
+A general Agent, however, may have Max Steps (Budget) of 100 steps or even more. Different Budgets directly determine the depth and breadth of task execution (the difference is quality, time, cost).
 
-我们太强调一个 Agent“能做无限步”，但忽视了从产品设计的角度来看，在1到无限之间，还有中间那么多的Budget状态，同样的 Query（例如“我要一份市场调研报告”），用户背后的隐性需求可能是“我很急，给我个概览”（Low Budget），也可能是“我不急，我要最深度的挖掘”（High Budget）。Agent 产品需要能够理解这种隐性的资源约束，Agent则在不同的 Budget 下都能给出不同的行为模式。
+We put too much emphasis on an Agent "being able to do infinite steps," but we overlook that from a product-design perspective, between 1 and infinity there are so many intermediate Budget states. For the same Query (e.g., "I want a market research report"), the user’s implicit need might be "I’m in a hurry, give me an overview" (Low Budget), or "I’m not in a hurry, I want the deepest digging" (High Budget). Agent products need to understand this implicit resource constraint, and the Agent should be able to produce different behavior patterns under different Budgets.
 
-### Agent的有限与离散
+### The finiteness and discreteness of Agents
 
-用物理学的视角来看，当前的 Agent 面临着两个本质的约束：**有限的空间（Context）**与**离散的时间（Discrete Steps）**。
+From a physics perspective, current Agents face two fundamental constraints: **finite space (Context)** and **discrete time (Discrete Steps)**.
 
-1.  **记忆的有限性（Space Limit）**：无论 Context Window 如何扩大，Agent 依然缺乏真正的长期记忆机制。这导致它目前主要适用于完成一次性的、无状态的任务。在面对需要长期上下文积累或复杂状态维护的场景时，即便是最先进的模型也会显得力不从心。
-2.  **感知的离散性（Time Discreteness）**：Agent 的感知不是连续的流，而是一组离散的 Tokens 或 Screenshot。这在 GUI 操作或实时交互中暴露得尤为明显。如果页面动态更新的速度超过了 Agent 的“帧率”（时间步长），它就会丢失关键信息，甚至产生幻觉。
+1.  **The finiteness of memory (Space Limit)**: no matter how the Context Window expands, the Agent still lacks a true long-term memory mechanism. This makes it currently mainly suitable for one-off, stateless tasks. When facing scenarios that require long-term context accumulation or complex state maintenance, even the most advanced models can seem powerless.
+2.  **The discreteness of perception (Time Discreteness)**: the Agent’s perception is not a continuous stream, but a set of discrete Tokens or Screenshot. This becomes especially obvious in GUI operations or real-time interactions. If the speed at which a page updates dynamically exceeds the Agent’s "frame rate" (time step length), it will lose key information and may even hallucinate.
 
-### 跨越时空的 Agent
+### Agents that traverse space and time
 
-在设计 Agent 产品时，有两个重要的点值得关注：
+When designing Agent products, there are two important points worth paying attention to:
 
-1.  **跨越空间**：让 Agent 在不同的领域、不同的数据库、不同的软件生态之间自由流转，打通信息孤岛。这是目前大多数 Agent 产品的发力点（Tool Use & Integration）。
-2.  **跨越时间**：让 Agent 具备长时序的因果推理能力。例如，Agent 今天的某个决策，在一个月后产生了什么结果？Agent 能否根据这个延迟反馈（Delayed Feedback）来修正自己一个月前的策略？
+1.  **Traverse space**: let the Agent flow freely across different domains, different databases, and different software ecosystems, breaking down information silos. This is where most Agent products are focusing today (Tool Use & Integration).
+2.  **Traverse time**: give the Agent long-horizon causal reasoning capabilities. For example, what result will a decision the Agent makes today produce one month later? Can the Agent use this delayed feedback (Delayed Feedback) to revise its strategy from a month ago?
 
-目前的 Agent 大多只聚焦在在“跨越空间”的部分，忙于对接各种 API。但“跨越时间”的Agent，能在漫长的时间跨度上追踪因果，进行长周期的优化。
+Most Agents today focus only on the "traversing space" part, busy integrating various APIs. But an Agent that "traverses time" can track causality over long spans and optimize over long cycles.
 
-### 理论模型：Agent Learning 的递归同构
+### Theoretical model: the recursive isomorphism of Agent Learning
 
-我们可以尝试将 Agent 的学习过程形式化为一种**递归同构（Recursive Isomorphism）**结构。即：**“学习”本身也是一个 Agent 解决问题的过程**。
+We can try to formalize the learning process of an Agent as a **recursive isomorphism (Recursive Isomorphism)** structure. That is: **"learning" itself is also a process in which an Agent solves problems**.
 
-在这个框架下，优化者（Optimizer）和执行者（Executor）遵循完全相同的运作模式：**Observation $\to$ Action** 循环，区别仅在于它们处理的“数据类型”不同。
+Under this framework, the optimizer (Optimizer) and the executor (Executor) follow exactly the same operating pattern: the **Observation $\to$ Action** loop. The only difference is the "data types" they process.
 
-我们可以定义一个通用的 Agent 策略函数 $\pi$，在第 $k$ 层级：
+We can define a generic Agent policy function $\pi$, at level $k$:
 
 $$
 A_k = \pi_k(O_k; \theta_k)
 $$
 
-这个结构可以像俄罗斯套娃一样无限展开：
+This structure can unfold infinitely like Russian nesting dolls:
 
 1.  **Level 0 (Execution Layer)**：
-    -   **目标**：解决具体任务（如写代码、订票）。
-    -   **Observation ($O_0$)**：具体的任务环境、用户指令、API 返回值。
-    -   **Action ($A_0$)**：生成文本、调用工具。
-    -   **参数 ($\theta_0$)**：Prompt、Context、Tools。
+    -   **Goal**：solve specific tasks (e.g., writing code, booking tickets).
+    -   **Observation ($O_0$)**：the concrete task environment, user instructions, API returns.
+    -   **Action ($A_0$)**：generate text, call tools.
+    -   **Parameters ($\theta_0$)**：Prompt, Context, Tools.
 
 2.  **Level 1 (Optimization Layer)**：
-    -   **目标**：优化 Level 0 Agent 的表现。
-    -   **Observation ($O_1$)**：Level 0 Agent 的**跑测结果**（Trajectories）、错误日志、评测分数。
-    -   **Action ($A_1$)**：**修改 $\theta_0$**（优化 Prompt、调整工具集、注入新案例）并**启动新的实验**。
-    -   **参数 ($\theta_1$)**：优化策略（Meta-Prompt）、反思逻辑。
+    -   **Goal**：optimize the performance of the Level 0 Agent.
+    -   **Observation ($O_1$)**：the Level 0 Agent’s **test-run results** (Trajectories), error logs, evaluation scores.
+    -   **Action ($A_1$)**：**modify $\theta_0$** (optimize Prompt, adjust toolsets, inject new cases) and **launch new experiments**.
+    -   **Parameters ($\theta_1$)**：optimization strategy (Meta-Prompt), reflection logic.
 
 3.  **Level N (Meta-Optimization Layer)**：
-    -   **目标**：优化 Level $N-1$ Agent 的学习效率。
-    -   **Observation ($O_N$)**：Level $N-1$ 的优化历史和改进曲线。
-    -   **Action ($A_N$)**：**修改 $\theta_{N-1}$**（例如调整“如何修改Prompt”的策略）。
+    -   **Goal**：optimize the learning efficiency of the Level $N-1$ Agent.
+    -   **Observation ($O_N$)**：the optimization history and improvement curve of Level $N-1$.
+    -   **Action ($A_N$)**：**modify $\theta_{N-1}$** (e.g., adjusting the strategy of "how to modify Prompt").
 
-我们可以用伪形式化的方式来表达这种递归关系（注意：这更多是一种概念性的类比，而非严格的数学定义）：
+We can express this recursive relationship in a pseudo-formal way (note: this is more of a conceptual analogy than a strict mathematical definition):
 
 $$
 \begin{cases}
-O_{k+1} \leftarrow \text{History}(\pi_k) & \text{// 高层的观测是低层的历史} \\
-A_{k+1} \to \text{Update}(\theta_k) & \text{// 高层的动作是更新低层的参数}
+O_{k+1} \leftarrow \text{History}(\pi_k) & \text{// the higher-level observation is the lower-level history} \\
+A_{k+1} \to \text{Update}(\theta_k) & \text{// the higher-level action is updating the lower-level parameters}
 \end{cases}
 $$
 
-其中 $\text{History}(\cdot)$ 表示对低层 Agent 执行轨迹的某种聚合或摘要，$\text{Update}(\cdot)$ 表示对低层参数的修改操作。这种视角的价值在于统一了 **"做任务"** 和 **"学任务"** 的范式。虽然在当前的算力约束下，高阶项（$k \geq 2$）的优化显得极其昂贵且收益递减。
+Here $\text{History}(\cdot)$ denotes some aggregation or summary of the lower-level Agent’s execution trajectories, and $\text{Update}(\cdot)$ denotes the operation of modifying lower-level parameters. The value of this perspective is that it unifies the paradigms of **"doing tasks"** and **"learning tasks"**. Although under current compute constraints, higher-order terms ($k \geq 2$) of optimization are extremely expensive and have diminishing returns.
 
-### 抽象视角：Agent 的本质是万能翻译器
+### Abstract view: the essence of an Agent is a universal translator
 
-Agent 的本质可以被抽象为一种不同模态之间的**通用翻译器**。
+The essence of an Agent can be abstracted as a **general-purpose translator** across different modalities.
 
-尽管 AI 技术看似眼花缭乱，但我们面对的实体其实是有限的：**Text（文字）、Audio（音频）、Image（图像）、Code（代码）、Video（视频）、File（文件）** ...
+Although AI technology looks dazzling, the entities we deal with are actually limited: **Text (words), Audio (audio), Image (images), Code (code), Video (video), File (files)** ...
 
-很多让我们眼前一亮的 AI 产品，都是这些实体转换的重新排列组合：
+Many AI products that impress us are just recombinations of conversions among these entities:
 - **ChatGPT**：Text → Text
 - **Cursor**：Text → Code
 - **Nano-Banana**：Text → Image
@@ -127,160 +126,161 @@ Agent 的本质可以被抽象为一种不同模态之间的**通用翻译器**�
 - **DeepWiki**：Code → Text
 - **Manus**: Text → File
 
-从过程上看，绝大多数 Agent 产品遵循一个共同的范式：**Language → Action (Code)**。语言（用户的意图）被翻译成代码，而代码被执行后产生了与物理/数字世界的真实交互。
+Process-wise, the vast majority of Agent products follow a shared paradigm: **Language → Action (Code)**. Language (the user’s intent) is translated into code, and the code—once executed—produces real interactions with the physical/digital world.
 
-**把这些“语言”的转换互相组合，在一些微妙的条件下，可能就会诞生全新的产品形态。**
+**By combining these conversions of “language” with each other, under some subtle conditions, entirely new product forms may be born.**
 
-### 集群视角：Multi-Agent 的递归、激活与协同税
+### A cluster view: recursion, activation, and the coordination tax of Multi-Agent
 
-虽然初始架构应保持简洁，但 Multi-Agent System (MAS) 仍有其价值。关键在于理解它**如何起效以及何时起效**，其核心在于：**递归（Recursion）**与**激活（Activation）**。
+Although the initial architecture should remain concise, Multi-Agent System (MAS) still has value. The key is understanding **how it works and when it works**, and its core lies in **recursion (Recursion)** and **activation (Activation)**.
 
-1.  **递归（Recursion）**：这是对"Budget"的极致扩展。如果一个 Main Agent 的能力上限是 30 步（Step），那么通过调用一个 Sub-Agent（同样具备 30 步能力），我们理论上可以将任务执行深度扩展到 $30 \times 30 = 900$ 步。三层的结构甚至可以继续递归为 $30 \times 30 \times 30$。目前之所以没有大规模应用更深层的递归，并非理论不可行，而是受到多重现实约束：模型的 Context 和稳定性不足以支撑如此长程的因果链条；大量外部数据源和工具生态尚未被有效打通；长链路执行带来的延迟和成本在商业上难以接受；以及调试和可解释性的困难使得生产环境部署风险过高。
-2.  **激活（Activation）**：这是对“专业度”的增强。通过为 Sub-Agent 注入特定的 System Prompt、Context 和 Action Space（工具集），或者加载不同的微调权重，我们实际上是在“激活”一个特定领域的专家。
+1.  **Recursion (Recursion)**: this is the extreme extension of "Budget". If a Main Agent’s capability ceiling is 30 steps (Step), then by calling a Sub-Agent (also with 30-step capability), we can theoretically expand the task-execution depth to $30 \times 30 = 900$ steps. A three-layer structure can even continue to recurse into $30 \times 30 \times 30$. The reason deeper recursion has not been applied at scale is not that it is theoretically impossible, but that it is constrained by multiple realities: the model’s Context and stability are insufficient to support such long-range causal chains; a large number of external data sources and tool ecosystems have not been effectively connected; the latency and cost brought by long-chain execution are hard to accept commercially; and the difficulty of debugging and interpretability makes production deployment too risky.
+2.  **Activation (Activation)**: this enhances “professionalism”. By injecting specific System Prompt, Context, and Action Space (toolset) into a Sub-Agent, or loading different fine-tuned weights, we are effectively “activating” a domain expert.
 
-然而，MAS 也引入了不可忽视的**协同税（Coordination Tax）**。
+However, MAS also introduces a non-negligible **coordination tax (Coordination Tax)**.
 
-协同税是指 Agent 之间在传递信息、对齐意图和等待响应时所消耗的成本（Token、时间、精度）。
+The coordination tax refers to the cost (tokens, time, precision) consumed when Agents pass information, align intent, and wait for responses.
 
-- **层级式结构（Hierarchical）**：如果我们采用上下级的树状结构，每个 Agent 只与其直接上下级通信，单次任务的沟通次数与树的深度相关，整体复杂度可控。
-- **网状结构（Mesh/All-to-All）**：如果允许 $n$ 个 Agent 之间两两自由对话，潜在的沟通通道数量将增长为 $O(n^2)$，协调成本急剧上升。
+- **Hierarchical structure (Hierarchical)**: if we adopt a tree structure of superiors and subordinates, each Agent communicates only with its direct superior/subordinate. The number of communications per task is related to the depth of the tree, and overall complexity is controllable.
+- **Mesh / all-to-all structure (Mesh/All-to-All)**: if $n$ Agents are allowed to freely talk pairwise, the number of potential communication channels grows to $O(n^2)$, and coordination costs rise sharply.
 
-过高的协同税往往会让系统陷入混乱和低效，因此，**在架构设计中权衡"递归收益"与"协同税"，是设计高效 MAS 的关键。**
+Excessive coordination tax often throws the system into chaos and inefficiency. Therefore, **balancing "recursion gains" and "coordination tax" in architecture design is the key to designing an efficient MAS.**
 
-## 二、关于产品的思考
+## II. Thoughts on Products
 
-### 全栈敏感度
+### Full-stack sensitivity
 
-设计一款优秀的 AI 产品，需要同时具备两种敏感度：
-- **对人类敏感**：设计好的交互，理解人性的弱点与需求。
-- **对机器敏感**：设计好的 AI，理解模型的边界与能力的本质。
+Designing an excellent AI product requires having two kinds of sensitivities at the same time:
+- **Sensitive to humans**: design good interactions, understand human weaknesses and needs.
+- **Sensitive to machines**: design good AI, understand the boundaries of models and the essence of capabilities.
 
-只有对它们都敏感，才能在技术与人性之间找到完美的平衡点。
+Only by being sensitive to both can you find the perfect balance between technology and human nature.
 
-### 产品定义即人群筛选
+### Product definition is user-segment selection
 
-在 AI 时代，产品定义的作用被放大了：**它本质上是在进行人群的“预筛选”**。
+In the AI era, the role of product definition is amplified: **it is essentially doing “pre-screening” of user groups**.
 
-如果你定义一个 Coding Agent，你的使用者大概率对 AI 有一定认知，对代码逻辑也不完全是小白。这种用户带来的数据是结构化的、反馈是精准的。但如果你定义一个类似 General Agent 的泛用产品，你面对的将是千人千面的用户画像和参差不齐的知识水平。
+If you define a Coding Agent, your users are likely to have some understanding of AI and not be complete beginners in code logic. The data these users bring is structured, and the feedback is precise. But if you define a general-purpose product like a General Agent, you will face user profiles of all kinds and uneven levels of knowledge.
 
-**你把产品定义成什么样，就会得到什么样的用户，进而得到什么样的数据和反馈。** 这种数据飞轮的初始方向，往往在产品定义的瞬间就已经决定了。对于希望通过用户数据迭代模型的团队来说，这一点至关重要。
+**What you define your product as determines what kind of users you get, and then what kind of data and feedback you get.** The initial direction of this data flywheel is often already decided at the moment the product is defined. For teams that hope to iterate models through user data, this is crucial.
 
-### Agent 产品与开放世界游戏设计
+### Agent products and open-world game design
 
-如果有人问我 Agent 产品该如何设计，我会推荐他去研究 **《荒野大镖客2》** 和 **《星际拓荒》**。
+If someone asks me how Agent products should be designed, I would recommend they study **Red Dead Redemption 2** and **Outer Wilds**.
 
-这两款游戏完美展示了 **开放世界（Agentic Exploration）** 和 **剧情向内容（Workflow/SOP）** 是如何有机结合的。
-- 在《荒野大镖客2》中，主线剧情提供了强有力的引导（Workflow），但玩家在任务之外拥有极高的自由度，可以与环境交互、触发随机事件（Agentic）。
-- 《星际拓荒》则更进一步，知识本身就是引导，玩家通过探索获得的信息自然地驱动下一步的行动规划。
+These two games perfectly show how **open worlds (Agentic Exploration)** and **story-driven content (Workflow/SOP)** can be organically combined.
+- In Red Dead Redemption 2, the main storyline provides strong guidance (Workflow), but players have extremely high freedom outside missions: they can interact with the environment and trigger random events (Agentic).
+- Outer Wilds goes a step further: knowledge itself is the guidance, and information gained through exploration naturally drives the planning of the next actions.
 
-做 Agent 产品和做开放世界游戏有着惊人的相似之处。这里的"开放世界"是双关的：对 Agent 而言，它需要在给定的 Action Space 内拥有足够的探索自由，而非被死板的 SOP 禁锢；对用户而言，使用产品的体验本身也应如同开放世界游戏——有主线引导方向，也有自由探索的余地。Workflow 保证下限，Agent 的适应性创造惊喜，用户的自主权则决定体验的上限。
+Building Agent products is astonishingly similar to building open-world games. The term "open world" is a double entendre here: for the Agent, it needs sufficient freedom of exploration within the given Action Space, rather than being constrained by rigid SOPs; for the user, the experience of using the product itself should also resemble an open-world game—there is a main quest guiding direction, and there is also room for free exploration. Workflows guarantee the lower bound, the Agent’s adaptability creates surprises, and the user’s autonomy determines the upper bound of the experience.
 
-### 从 MVC 到 Agent-Centric 架构
+### From MVC to Agent-Centric architecture
 
-传统的 MVC 架构正在被重构。
+Traditional MVC architecture is being reconstructed.
 
-- **Controller -> Agent Core**：过去被动、硬编码的控制器，正在被一个能自主规划和调用工具的智能“大脑”所取代。
-- **Model -> Capabilities**：模型层不再仅仅是数据存储，而是演变成了提供能力和数据的工具集（Tools）。
-- **View -> Generative Interface**：视图层正在经历最激进的变革。它不再是静态的 UI 渲染，而是演变成了 **Generative Interface（生成式交互界面）**，界面是流动的，是根据 Agent 的意图和用户的即时需求动态生成的，各个团队也在这种交互上进行不同的尝试。
+- **Controller -> Agent Core**: the previously passive, hard-coded controller is being replaced by an intelligent “brain” that can plan autonomously and call tools.
+- **Model -> Capabilities**: the model layer is no longer just data storage; it evolves into a toolset (Tools) that provides capabilities and data.
+- **View -> Generative Interface**: the view layer is undergoing the most radical change. It is no longer static UI rendering, but evolves into a **Generative Interface (generative interaction interface)**, where the interface is fluid and dynamically generated based on the Agent’s intent and the user’s immediate needs, and different teams are trying different approaches to such interactions.
 
-### 两种“产品经理”的博弈
+### A game between two kinds of “product managers”
 
-在 AI 领域，我观察到一种有趣的双重产品设计视角：
-- **产品经理**在为**用户**设计产品（UI/UX、功能、场景）。
-- **算法/Researcher** 在为**模型**设计产品。
+In the AI field, I have observed an interesting dual product-design perspective:
+- **Product managers** design products for **users** (UI/UX, features, scenarios).
+- **Algorithm/Researchers** design products for **models**.
 
-这两个“产品”实际上是在互相制约和对齐的。优秀的产品体验需要模型能力的支撑，而模型能力的释放又受限于产品交互的形态。
+These two “products” actually constrain and align with each other. Great product experience needs model capabilities to support it, while the release of model capabilities is constrained by the form of product interaction.
 
-如果产品经理不懂模型边界，设计出的功能就是空中楼阁；如果算法不懂用户场景，优化出的模型/agent就是闭门造车。
+If product managers don’t understand model boundaries, the features they design become castles in the air; if algorithms don’t understand user scenarios, the models/agents they optimize become ivory-tower work.
 
-### 判断任务是否适合 AI
+### Judging whether a task is suitable for AI
 
-1.  **Hard for Humans（对人类有负担）**：这里的"难"不仅指智力难度，也包括**繁琐、重复、耗时**。很多成功的 AI 应用（如邮件分类、语音转文字、批量图片处理）恰恰是做"人类觉得简单但不愿意做"的事——简单但量大、重复且枯燥。这类任务同样是 AI 的价值高地，因为它解放了人类的时间和注意力。
-2.  **Digital（数字化程度高）**：任务的输入和输出必须是数字化的，或者容易被数字化的。这是 AI 介入的物理前提。
-3.  **Data Easy to Get or Create（数据易获取）**：这是 AI 学习的养料。如果没有数据，再强的模型也无米下锅。
+1.  **Hard for Humans (a burden for humans)**: the "hard" here refers not only to intellectual difficulty, but also **tediousness, repetition, and time consumption**. Many successful AI applications (such as email classification, speech-to-text, batch image processing) do exactly what "humans find easy but don’t want to do"—easy but high-volume, repetitive, and boring. Such tasks are also high-value territory for AI, because they free up human time and attention.
+2.  **Digital (high degree of digitization)**: the inputs and outputs of the task must be digital, or easily digitized. This is the physical prerequisite for AI to intervene.
+3.  **Data Easy to Get or Create (data is easy to obtain or create)**: this is the nourishment for AI learning. Without data, even the strongest model has nothing to cook with.
 
-在评估一个新的 AI 想法时，我会反复用这把尺子去衡量：我们是不是在做一个"人类既不觉得难、也不觉得烦"、"物理世界重度依赖"或者"数据极度匮乏"的产品？如果是，那多半是死路一条。
+When evaluating a new AI idea, I repeatedly use this ruler: are we building a product where "humans neither find it hard nor find it annoying," or one that "heavily depends on the physical world," or one with "extreme data scarcity"? If so, it is probably a dead end.
 
-### AI 产品的行为设计公式：B = MAP
+### The behavior design formula for AI products: B = MAP
 
-借用 BJ Fogg 的行为模型（Fogg Behavior Model），我认为 AI 产品设计也遵循 $B = MAP$ 的公式：
-**Behavior（行为）= Motivation（动机）× Ability（能力）× Prompt（提示）**
+Borrowing BJ Fogg’s behavior model (Fogg Behavior Model), I believe AI product design also follows the formula $B = MAP$:
+**Behavior (behavior) = Motivation (motivation) × Ability (ability) × Prompt (prompt)**
 
-1.  **Motivation（用户动机）**：用户为什么要在这一刻使用你的 AI？是为了解决急迫的 Bug（高动机），还是只是闲得无聊想聊两句（低动机）？AI 产品往往容易陷入“炫技”的陷阱，而忽略了用户最朴素的动机——省力、省时或获得情感慰藉。
-2.  **Ability（用户能力）**：这里对应的是**易用性（Simplicity）**。目前的 AI 产品往往对用户能力要求过高（比如需要写复杂的 Prompt）。优秀的产品应该**赋予用户能力**，而不是**消耗用户能力**。如果使用你的产品需要用户先学习一本“提示词工程指南”，那 Ability 就太低了。理想的情况是，把操作门槛降到接近零，让用户感觉自己变强了。
-3.  **Prompt（产品提示）**：产品在恰当的时机（Context）给出的引导、按钮或通知，提醒用户“现在可以用 AI 来解决这个问题”。
+1.  **Motivation (user motivation)**: why does the user want to use your AI at this moment? Is it to fix an urgent Bug (high motivation), or just to kill time and chat a bit (low motivation)? AI products often fall into the trap of “showing off,” while ignoring the user’s most basic motivations—saving effort, saving time, or getting emotional comfort.
+2.  **Ability (user ability)**: this corresponds to **simplicity (Simplicity)**. Many AI products currently demand too much from users (e.g., requiring complex Prompts). A great product should **grant users ability**, not **consume users’ ability**. If using your product requires users to first study a “prompt engineering guide,” then Ability is too low. Ideally, lower the operational threshold to near zero, so users feel they have become stronger.
+3.  **Prompt (product prompt)**: the guidance, buttons, or notifications the product provides at the right moment (Context), reminding users “you can use AI to solve this problem now.”
 
-AI 产品经理的任务，就是在动机（M）足够时，最大化用户的能力（A），并提供精准的提示（P）来促成行为的发生。
+The task of an AI product manager is: when Motivation (M) is sufficient, maximize users’ Ability (A), and provide precise Prompts (P) to trigger the behavior.
 
-## 三、关于行业的思考
+## III. Thoughts on the Industry
 
-### 真正的壁垒：元能力
+### The real moat: meta-capabilities
 
-在这个时代，AI 产品高度依赖基础模型。而基础模型正在成为一种公共基础设施（Utility）——就像电力和互联网一样，人人都能接入，人人都能使用。
+In this era, AI products heavily depend on foundation models. And foundation models are becoming a kind of public infrastructure (Utility)—like electricity and the internet: everyone can access them, everyone can use them.
 
-当所有团队都能调用同一水平的底层智能时，一个功能点的领先可能只需要几周就会被追平。**壁垒便不再是产品目前的某个功能点，而是"制造这个能力的元能力"**。
+When all teams can call into the same level of underlying intelligence, a lead in a single feature may only take a few weeks to be caught up. **The moat is no longer a product’s current feature, but the "meta-capability of manufacturing that capability."**
 
-这里的"元能力"是指，团队自己构建的 Agent 能否反过来用于团队内部的迭代流程？例如，用自家的 Agent 来加速自身产品的开发，分析竞品和论文。当 Agent 成为协助自身产品演进的工具时，便形成了一个自我增强的正反馈循环——用 AI 来做 AI。当然同时也指，团队成员本身的沟通迭代速度。
+Here, "meta-capability" refers to whether the Agent a team builds can in turn be used for the team’s internal iteration process—for example, using their own Agent to speed up their product development, analyze competitors and papers. When an Agent becomes a tool that assists the evolution of one’s own product, it forms a self-reinforcing positive feedback loop—using AI to build AI. This also, of course, refers to the team members’ own speed of communication and iteration.
 
-对于早期的 AI 创业团队而言，**速度就是壁垒**。在巨头尚未反应过来的窗口期内，谁能更快地将 Insight 转化为 Product Feature，谁能更快地通过用户反馈完成数据闭环，谁就能在夹缝中抢先建立起用户心智和数据护城河。
+For early-stage AI startups, **speed is the moat**. In the window before giants react, whoever can more quickly turn Insight into Product Features, and more quickly complete the data loop through user feedback, can seize mindshare and build a data moat first, surviving in the cracks.
 
-### 迭代文明，而非个体
+### Iterating a civilization, not an individual
 
-当我们评估一个 LLM 时，往往习惯于关注个体表现：它这次回答得准不准？下次这个 Case 有没有解决？这种视角是把 AI 当作“一个人”来看待。
+When we evaluate an LLM, we often focus on individual performance: was this answer accurate? Was that Case solved next time? This view treats AI as “a person.”
 
-但如果我们把视野拉高，一个成功的 AI 产品拥有海量用户，成千上万个 Agent 实例在平行时空里与用户交互、学习、试错。这时候，我们面对的不再是一个单独的智能体，而是一个正在演化的**数字文明**。
+But if we zoom out, a successful AI product has massive users, and tens of thousands of Agent instances interact with users, learn, and trial-and-error in parallel timelines. At that point, what we face is no longer a single agent, but an evolving **digital civilization**.
 
-**迭代一个 AI 系统，关注整个群体的进化趋势。** 
+**To iterate an AI system, focus on the evolutionary trend of the whole population.** 
 
-个体往往追求在特定任务上效果的极致（Overfitting），而群体进化的关键在于**泛化（Generalization）与迁移（Transfer）**。我们需要思考的是：
-- 某个 Agent 在 A 任务中学到的经验，如何被抽象并迁移到完全不同的 B 任务中？
-- 这个系统内的知识如何像文明传承一样被积累和共享，而不是随着会话结束而消散？
-- 如何设计机制，让这个“文明”在海量交互中自动涌现出更高级的智能，而不是依赖工程师手动修补每一个 Bug？
+Individuals often pursue extreme performance on specific tasks (Overfitting), while the key to population evolution is **generalization (Generalization)** and **transfer (Transfer)**. What we need to think about is:
+- How can the experience an Agent learns in task A be abstracted and transferred to a completely different task B?
+- How can knowledge in the system be accumulated and shared like civilizational inheritance, rather than dissipating when a session ends?
+- How can we design mechanisms so that this “civilization” automatically emerges higher intelligence from massive interactions, instead of relying on engineers to manually patch every Bug?
 
-### 创业者的夹缝生存：寻找计算的新平衡
+### Startup survival in the cracks: finding a new balance of compute
 
-AI 创业团队正处于一个尴尬的“夹缝”之中：
-- **往模型层（Model Layer）靠**：越往底层走，你面临的是与科技巨头（Google, OpenAI, Meta）在算力、数据和人才上的正面绞杀。这是一个资本密集型的游戏。
-- **往工作流层（Workflow Layer）靠**：越往上层走，你变得越像一个传统的 SaaS。虽然避开了巨头的锋芒，但你又陷入了与成熟软件厂商的存量竞争，且 AI 的附加值容易被稀释。
+AI startups are in an awkward “in-between”:
+- **Move toward the model layer (Model Layer)**: the deeper you go, the more you face a head-on fight with tech giants (Google, OpenAI, Meta) in compute, data, and talent. This is a capital-intensive game.
+- **Move toward the workflow layer (Workflow Layer)**: the higher you go, the more you resemble a traditional SaaS. While avoiding the giants’ direct firepower, you fall into incumbent competition with mature software vendors, and AI’s added value is easily diluted.
 
-要在夹缝中生存，不仅需要找到独特的生态位，更关键的是要找到**Offline（离线）与 Online（在线）计算量的新平衡**。
+To survive in the cracks, it’s not only necessary to find a unique niche; more importantly, it’s necessary to find a new balance between **Offline (offline) and Online (online) compute**.
 
-我们习惯于把 Offline Compute 等同于 Training，把 Online Compute 等同于 Inference。但对于 Agent 产品来说，这种划分太狭隘了。
+We are used to equating Offline Compute with Training, and Online Compute with Inference. But for Agent products, this division is too narrow.
 
-**把 Online 的计算压力分摊到 Offline 去**，利用大量的离线算力来换取极致的在线体验。这种“计算量的时间套利”，可能是创业团队构建差异化体验的一条捷径。
+**Shift the online compute pressure to offline**, using large amounts of offline compute to buy an ultimate online experience. This “time arbitrage of compute” may be a shortcut for startups to build differentiated experiences.
 
-## 四、关于人的思考
+## IV. Thoughts on People
 
-### Fact vs. Truth：偏好的困境
+### Fact vs. Truth: the dilemma of preferences
 
-黄仁勋年中问了 Sam Altman 一个深刻的问题：**"Fact is what is. Truth is what it means."**
+Jensen Huang asked Sam Altman a profound question mid-year: **"Fact is what is. Truth is what it means."**
 
-AI 可以轻易地学习和记忆海量的 Facts（事实），但 Truth（真相/真理）往往是主观的，它取决于视角、文化、价值观和背景。
+AI can easily learn and memorize massive Facts, but Truth (truth/meaning) is often subjective; it depends on perspective, culture, values, and background.
 
-大部分的开放性问题并没有绝对的 Reward。Instagram 用户的偏好和 X (Twitter) 用户的偏好截然不同；甚至同一个用户，上个月的偏好和下个月的偏好也会发生漂移。
+Most open-ended questions have no absolute Reward. Instagram users’ preferences and X (Twitter) users’ preferences are completely different; even for the same user, preferences may drift from last month to next month.
 
-这意味着**构建一个绝对通用的 Reward Model 几乎是不可能的**。具体价值观的对齐，本质上是对目标用户群体偏好的捕捉和适应。
+This means **building a truly universal Reward Model is almost impossible**. Aligning specific values is essentially capturing and adapting to the preferences of the target user group.
 
-### 奖励的梯度与内心的宗教
+### The gradient of reward and the religion within
 
-人追求的往往不是 Reward 的绝对值（比如 100 块钱），而是 **Reward 的梯度**（从没钱到有钱的增长感）。正是这种“局势正在变好”的希望感（Hope），即 **Reward Function 的n阶导数为正**，驱动着人类不断前行。
+What people pursue is often not the absolute value of Reward (e.g., 100 yuan), but the **gradient of Reward** (the sense of growth from having no money to having money). It is exactly this sense of hope (Hope) that “things are getting better,” i.e., **the n-th derivative of the Reward Function being positive**, that drives humans forward.
 
-我们可以用一个**直觉性的类比**（而非严格的数学模型）来描述这种"希望感"：
+We can use an **intuitive analogy** (rather than a strict mathematical model) to describe this "sense of hope":
 
 $$
 \text{Hope}(t) \sim w_1 \frac{dR}{dt} + w_2 \frac{d^2R}{dt^2} + \cdots
 $$
 
-其中 $R(t)$ 是当前的 Reward 状态，$w_n$ 是递减的权重系数（确保高阶项的影响逐渐衰减）。这个表达式意在说明：我们真正迷恋的，往往不是 $R(t)$ 本身，而是它的变化趋势——一阶导数（增速）、二阶导数（加速度）等正向信号的叠加。
+Here $R(t)$ is the current Reward state, and $w_n$ are decreasing weight coefficients (ensuring the influence of higher-order terms gradually decays). This expression is meant to illustrate: what we are truly obsessed with is often not $R(t)$ itself, but its trend of change—the superposition of positive signals such as the first derivative (growth rate), the second derivative (acceleration), and so on.
 
-然而，物理世界的增长总是有极限的。当增长放缓甚至停滞（梯度归零），人就会感到痛苦和迷茫。
+However, growth in the physical world always has limits. When growth slows down or even stagnates (the gradient returns to zero), people feel pain and confusion.
 
-这时，人类往往通过两种方式自救：
-1.  **重构奖励函数（Rewiring Reward Function）**：主动修正优化的目标变量（Objective Variable）。不再单纯追求外部物理世界中边际收益递减的指标（如金钱），而是将价值锚点迁移至精神或道德维度。例如斯多葛学派（Stoicism），通过认知重塑（Cognitive Reframing）将外部不可控的负向反馈（痛苦）重新编码为正向的价值信号（磨练），从而实现了 Reward 机制的自洽与鲁棒性。
-2.  **向内探索（Latent Space Exploration）**：不再依赖物理世界的稀疏反馈，而是转向内部，在精神世界的 Latent Space 中寻找满足。通过在某种高维特征空间中的漫游与重组，构建出源源不断的内在奖励（Intrinsic Reward）。
+At that time, humans often save themselves in two ways:
+1.  **Rewiring the Reward Function (Rewiring Reward Function)**: proactively revise the objective variable (Objective Variable) being optimized. Rather than simply pursuing indicators in the external physical world with diminishing marginal returns (such as money), shift the value anchor to spiritual or moral dimensions. For example, Stoicism (Stoicism) re-encodes uncontrollable negative feedback (pain) from the outside world into a positive value signal (tempering) through cognitive reframing (Cognitive Reframing), thereby achieving the self-consistency and robustness of the Reward mechanism.
+2.  **Exploring inward (Latent Space Exploration)**: no longer rely on sparse feedback from the physical world, but turn inward to find satisfaction in the Latent Space of the spiritual world. By roaming and recombining within some high-dimensional feature space, construct an endless stream of intrinsic rewards (Intrinsic Reward).
 
-这或许从计算视角解释了宗教和哲学的演化必然性：**它们构建了一个具有 Infinite Horizon（无限视界）的优化目标，并在 Latent Space 中建立了一套能够持续产生 Dense Intrinsic Reward（稠密内在奖励）的反馈机制。**
+From a computational perspective, this may explain the inevitability of the evolution of religion and philosophy: **they construct an optimization objective with an Infinite Horizon, and build a feedback mechanism in Latent Space that can continuously generate Dense Intrinsic Reward (dense intrinsic reward).**
 
-# 结语
+# Conclusion
 
-2025 年上半年，无论是 LLM 在 RL 方向的进展，还是 Agent 产品的集中爆发，都把行业情绪推到了高点。到了下半年，新鲜的产品定义并不多，Research 也更多是在上半年的思路上做延展与工程化。2026会怎么样呢？我很期待，我很担忧。
+In the first half of 2025, whether it was LLM progress in the RL direction or the concentrated explosion of Agent products, industry sentiment was pushed to a high. In the second half, there were not many fresh product definitions, and Research was more about extending and engineering the first-half directions. What will 2026 be like? I’m looking forward to it, and I’m worried.
+
