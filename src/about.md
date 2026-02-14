@@ -1,4 +1,4 @@
-I am the CoFounder at [Amplift](https://www.amplift.ai/), where I spearhead the algorithm team in advancing the core capabilities of General Agents. Previously, I was a Researcher at [MetaGPT (DeepWisdom)](https://www.deepwisdom.ai/), and initiated [OpenManus](https://github.com/mannaandpoem/OpenManus) with the team. My research focuses on LLM-based Agents, particularly Agent Self-Evolution and Foundation Agents.
+I am the CoFounder at [Amplift](https://www.amplift.ai/), where I spearhead the algorithm team in advancing the core capabilities of General Agents. Previously, I was a Researcher at [MetaGPT (DeepWisdom)](https://www.deepwisdom.ai/), and initiated [OpenManus](https://github.com/FoundationAgents/OpenManus) with the team. My research focuses on LLM-based Agents, particularly Agent Self-Evolution and Foundation Agents.
 
 I am also the Research Lead at [Agent Universe](https://github.com/Agent-Universe), leading team research on AI content reformulation and redistribution.
 

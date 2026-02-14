@@ -83,12 +83,15 @@ function formatDate(date: Date) {
         {sortedPublications.map(async (pub) => {
             const { Content } = await pub.render();
             return (
-                <div class="publication">
-                    <div class="pub-image">
-                        <img src={pub.data.image} alt={pub.data.title} />
-                        <span class="badge">{pub.data.badge}</span>
-                    </div>
+                <div class={`publication ${pub.data.image ? '' : 'no-image'}`}>
+                    {pub.data.image && (
+                        <div class="pub-image">
+                            <img src={pub.data.image} alt={pub.data.title} />
+                            <span class="badge">{pub.data.badge}</span>
+                        </div>
+                    )}
                     <div class="pub-content">
+                        {!pub.data.image && <span class="badge inline-badge">{pub.data.badge}</span>}
                         <h3><a href={pub.data.url}>{pub.data.title}</a></h3>
                         <p class="authors" set:html={parseMarkdown(pub.data.authors)} />
                         <div class="description">
@@ -332,6 +335,10 @@ function formatDate(date: Date) {
         border-bottom: 1px solid var(--border-color);
     }
 
+    .publication.no-image {
+        grid-template-columns: 1fr;
+    }
+
     .pub-image {
         position: relative;
     }
@@ -353,6 +360,12 @@ function formatDate(date: Date) {
         font-size: 0.75rem;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 600;
+    }
+
+    .inline-badge {
+        position: static;
+        display: inline-block;
+        margin-bottom: 0.8rem;
     }
 
     .pub-content h3 {
