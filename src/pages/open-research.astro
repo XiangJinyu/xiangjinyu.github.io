@@ -1,0 +1,484 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const projects = [
+  {
+    title: "HEM: Hierarchical Experience Memory for Self-Evolving LLM Agents",
+    repo: "https://github.com/XiangJinyu/hem-agent",
+    pdf: "https://github.com/XiangJinyu/hem-agent/blob/main/paper/HEM_Hierarchical_Experience_Memory.pdf",
+    thumbnail: "/images/open-research/hem-agent.png",
+    description: "Introduces a hierarchical experience memory architecture that enables LLM agents to accumulate, organize, and retrieve experiential knowledge for continuous self-improvement across tasks.",
+    tags: ["LLM Agent", "Self-Evolution", "Memory"],
+  },
+  {
+    title: "Tidal-Induced Stellar Warp: Ring Model Simulation Study",
+    repo: "https://github.com/XiangJinyu/stellar-warp-sim",
+    pdf: "https://github.com/XiangJinyu/stellar-warp-sim/blob/main/paper/tidal_stellar_warp_paper.pdf",
+    thumbnail: "/images/open-research/stellar-warp-sim.png",
+    description: "Simulates tidal-induced stellar warps using a ring model framework, investigating the mechanisms by which satellite galaxies excite and sustain disk warping in host galaxies.",
+    tags: ["Astrophysics", "Simulation", "Stellar Dynamics"],
+  },
+  {
+    title: "Agent RL for Diffusion LLMs",
+    repo: "https://github.com/XiangJinyu/dAgent-RL",
+    pdf: "https://github.com/XiangJinyu/dAgent-RL/blob/main/paper/Agent_RL_for_Diffusion_LLMs.pdf",
+    thumbnail: "/images/open-research/dAgent-RL.png",
+    description: "Explores reinforcement learning post-training for diffusion-based large language models in agentic settings, powering the state-of-the-art TraDo series.",
+    tags: ["Diffusion LLM", "Reinforcement Learning", "Agent"],
+  },
+  {
+    title: "Finitude and the Weight of Choice",
+    repo: "https://github.com/XiangJinyu/finitude-and-the-weight-of-choice",
+    pdf: "https://github.com/XiangJinyu/finitude-and-the-weight-of-choice/blob/main/Finitude_and_the_Weight_of_Choice.pdf",
+    thumbnail: "/images/open-research/finitude.png",
+    description: "A philosophy paper arguing that human uniqueness in the AI era is grounded in finitude rather than simulable cognitive properties. Introduces the concept of 'weight of choice' as a distinguishing feature of embodied, mortal agents.",
+    tags: ["Philosophy", "AI & Humanity", "Ethics"],
+  },
+  {
+    title: "Automated Census of Optical Disk Warps in Edge-on Galaxies from DESI Legacy Surveys",
+    repo: "https://github.com/XiangJinyu/galaxy-warp-census",
+    pdf: "https://github.com/XiangJinyu/galaxy-warp-census/blob/main/paper/Galaxy_Warp_Census_DESI_LS.pdf",
+    thumbnail: "/images/open-research/galaxy-warp-census.png",
+    description: "Conducts an automated census of optical disk warps in 742 edge-on galaxies from DESI Legacy Surveys DR10, finding a 3.8% warp frequency with complete MNRAS-format analysis.",
+    tags: ["Astrophysics", "Galaxy Morphology", "DESI"],
+  },
+  {
+    title: "Tidal-Induced Disk Warps in TNG50: A Statistical Study",
+    repo: "https://github.com/XiangJinyu/tng50-tidal-warp",
+    pdf: "https://github.com/XiangJinyu/tng50-tidal-warp/blob/main/paper/tng50_tidal_warp_paper.pdf",
+    thumbnail: "/images/open-research/tng50-tidal-warp.png",
+    description: "A statistical study of tidal-induced disk warps in the TNG50 cosmological simulation, analyzing the incidence, amplitude, and environmental correlations of warped galactic disks.",
+    tags: ["Astrophysics", "TNG50", "Cosmological Simulation"],
+  },
+  {
+    title: "Resolving the JWST High-z Galaxy Excess with a Semi-Analytic Model",
+    repo: "https://github.com/XiangJinyu/jwst-sam",
+    pdf: "https://github.com/XiangJinyu/jwst-sam/blob/main/jwst-sam.pdf",
+    thumbnail: "/images/open-research/jwst-sam.png",
+    description: "Addresses the tension between JWST observations and theoretical predictions of high-redshift galaxy abundances by introducing a redshift-dependent star formation efficiency in a semi-analytic model, reducing chi-squared from 79.1 to 0.41 at z>=10.",
+    tags: ["Astrophysics", "JWST", "Galaxy Formation"],
+  },
+];
+---
+
+<Layout title="Open Research | Jinyu Xiang" description="Research projects generated with Open Research — an AI-powered research assistant.">
+  <section class="or-banner">
+    <div class="or-banner-inner">
+      <pre class="or-ascii" aria-label="Open Research logo">
+ ██████╗ ██████╗ ███████╗███╗   ██╗
+██╔═══██╗██╔══██╗██╔════╝████╗  ██║
+██║   ██║██████╔╝█████╗  ██╔██╗ ██║
+██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║
+╚██████╔╝██║     ███████╗██║ ╚████║
+ ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝
+██████╗ ███████╗███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██████╔╝█████╗  ███████╗█████╗  ███████║██████╔╝██║     ███████║
+██╔══██╗██╔══╝  ╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██║  ██║███████╗███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝</pre>
+      <p class="or-tagline">AI-powered research assistant — from idea to full paper.</p>
+      <div class="or-install">
+        <div class="or-cmd-box" id="cmdBox">
+          <span class="or-prompt">$</span>
+          <code>curl -fsSL https://raw.githubusercontent.com/XiangJinyu/open-research/main/install.sh | bash</code>
+          <button class="or-copy-btn" id="copyBtn" aria-label="Copy install command">Copy</button>
+        </div>
+      </div>
+      <div class="or-banner-links">
+        <a href="https://github.com/XiangJinyu/open-research" target="_blank" rel="noopener">GitHub</a>
+        <span class="or-sep">·</span>
+        <a href="#projects">Projects</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="or-section-header">
+    <span class="anchor" id="projects"></span>
+    <h2>Research Projects</h2>
+    <p>Papers generated with the assistance of Open Research.</p>
+  </section>
+
+  <section class="or-projects">
+    {projects.map((project, i) => (
+      <article class="or-card">
+        <a href={project.pdf} target="_blank" rel="noopener" class="or-thumbnail">
+          <img src={project.thumbnail} alt={`First page of ${project.title}`} loading="lazy" />
+        </a>
+        <div class="or-card-body">
+          <div class="or-card-header">
+            <span class="or-index mono-font">#{String(i + 1).padStart(2, '0')}</span>
+            <div class="or-tags">
+              {project.tags.map(tag => (
+                <span class="or-tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+          <h2><a href={project.repo} target="_blank" rel="noopener">{project.title}</a></h2>
+          <p class="or-desc">{project.description}</p>
+          <div class="or-links">
+            <a href={project.pdf} target="_blank" rel="noopener" class="or-btn or-btn-primary">
+              Paper PDF
+            </a>
+            <a href={project.repo} target="_blank" rel="noopener" class="or-btn or-btn-secondary">
+              GitHub Repo
+            </a>
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="or-footer-section">
+    <p>
+      Built with <a href="https://github.com/XiangJinyu/open-research" target="_blank" rel="noopener">Open Research</a>
+      — accelerating scientific discovery through AI-assisted research.
+    </p>
+  </section>
+</Layout>
+
+<script>
+  document.getElementById('copyBtn')?.addEventListener('click', () => {
+    const cmd = 'curl -fsSL https://raw.githubusercontent.com/XiangJinyu/open-research/main/install.sh | bash';
+    navigator.clipboard.writeText(cmd).then(() => {
+      const btn = document.getElementById('copyBtn');
+      if (btn) { btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+    });
+  });
+</script>
+
+<style>
+  /* Dark banner */
+  .or-banner {
+    background: #0a0a0b;
+    margin-top: -1px;
+    padding: 4rem 1.5rem 3.5rem;
+    text-align: center;
+    overflow-x: auto;
+  }
+
+  .or-banner-inner {
+    max-width: var(--container-width);
+    margin: 0 auto;
+  }
+
+  .or-ascii {
+    font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: clamp(0.32rem, 1.3vw, 0.72rem);
+    line-height: 1.2;
+    color: #a0a0a0;
+    margin: 0 auto;
+    display: inline-block;
+    text-align: left;
+    user-select: none;
+    opacity: 0.85;
+  }
+
+  .or-tagline {
+    font-family: var(--font-mono);
+    font-size: clamp(0.8rem, 2vw, 1.15rem);
+    color: #e0e0e0;
+    margin: 1.5rem 0 2rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* Install command box */
+  .or-install {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .or-cmd-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: #161618;
+    border: 1px solid #2a2a2e;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .or-prompt {
+    color: #555;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .or-cmd-box code {
+    font-family: var(--font-mono);
+    font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+    color: #c8c8c8;
+    white-space: nowrap;
+  }
+
+  .or-copy-btn {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    background: #2a2a2e;
+    color: #999;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .or-copy-btn:hover {
+    background: #3a3a3e;
+    color: #e0e0e0;
+  }
+
+  .or-banner-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    align-items: center;
+  }
+
+  .or-banner-links a {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #888;
+    transition: color 0.2s;
+  }
+
+  .or-banner-links a:hover {
+    color: #e0e0e0;
+  }
+
+  .or-sep {
+    color: #444;
+    font-size: 0.8rem;
+  }
+
+  /* Section header */
+  .or-section-header {
+    max-width: var(--container-width);
+    margin: 3rem auto 2rem;
+    padding: 0 1.5rem;
+  }
+
+  .or-section-header h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid var(--text-primary);
+    padding-bottom: 0.5rem;
+  }
+
+  .or-section-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+
+  .anchor {
+    display: block;
+    position: relative;
+    top: -80px;
+    visibility: hidden;
+  }
+
+  /* Projects list */
+  .or-projects {
+    max-width: var(--container-width);
+    margin: 0 auto 4rem;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* Card with thumbnail */
+  .or-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 2rem;
+    align-items: start;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .or-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border-color: var(--accent-color);
+  }
+
+  /* Thumbnail */
+  .or-thumbnail {
+    display: block;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .or-thumbnail:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .or-thumbnail img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Card body */
+  .or-card-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .or-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+
+  .or-index {
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    font-weight: 600;
+  }
+
+  .or-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .or-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    background: #f0f0f0;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .or-card h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+  }
+
+  .or-card h2 a {
+    color: var(--text-primary);
+  }
+
+  .or-card h2 a:hover {
+    color: var(--accent-color);
+  }
+
+  .or-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  /* Buttons */
+  .or-links {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: auto;
+  }
+
+  .or-btn {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .or-btn-primary {
+    background: var(--accent-color);
+    color: #fff;
+  }
+
+  .or-btn-primary:hover {
+    background: #c24420;
+    color: #fff;
+  }
+
+  .or-btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+  }
+
+  .or-btn-secondary:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+  }
+
+  /* Footer note */
+  .or-footer-section {
+    max-width: var(--container-width);
+    margin: 0 auto 5rem;
+    padding: 2rem 1.5rem 0;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+  }
+
+  .or-footer-section p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .or-footer-section a {
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--accent-color);
+  }
+
+  .or-footer-section a:hover {
+    color: var(--text-primary);
+    border-bottom-color: var(--text-primary);
+  }
+
+  @media (max-width: 768px) {
+    .or-hero-content h1 {
+      font-size: 2rem;
+    }
+
+    .or-card {
+      grid-template-columns: 1fr;
+      padding: 1.5rem;
+    }
+
+    .or-thumbnail {
+      max-width: 200px;
+    }
+
+    .or-card-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .or-links {
+      flex-direction: column;
+    }
+
+    .or-btn {
+      text-align: center;
+      justify-content: center;
+    }
+  }
+</style>

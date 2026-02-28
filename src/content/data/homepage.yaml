@@ -1,4 +1,6 @@
 news:
+  - date: "2026.02"
+    content: "Released [Open Research](/open-research), an AI-powered research assistant that goes from idea to full paper. Generated **7 research papers** spanning AI agents, astrophysics, and philosophy."
   - date: "2025.05"
     content: "CoFounded Amplift, focusing on General Agents and Marketing Agent applications."
   - date: "2025.04"
@@ -40,6 +42,10 @@ jobs:
     url: "https://y.qq.com/n/ryqq/singer/003uqHad2JLREo"
 
 projects:
+  - date: "2026.02"
+    title: "Open Research"
+    url: "/open-research"
+    description: "Author. An AI-powered research assistant that autonomously conducts end-to-end research — from literature review to experimentation to paper writing. Generated 7 full papers across AI, astrophysics, and philosophy."
   - date: "2025.03"
     title: "OpenManus"
     url: "https://github.com/FoundationAgents/OpenManus"
