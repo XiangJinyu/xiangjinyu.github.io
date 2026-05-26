@@ -2,6 +2,8 @@ news:
   - date: "2026.02"
     content: "Released [Open Research](/open-research), an AI-powered research assistant that goes from idea to full paper. Generated **7 research papers** spanning AI agents, astrophysics, and philosophy."
   - date: "2025.05"
+    content: "Joined Xiaomi Mimo-Core as an Algorithm Researcher."
+  - date: "2025.05"
     content: "CoFounded [Karis](https://karis.im/), focusing on General Agents and Marketing Agent applications."
   - date: "2025.04"
     content: "Participated in the [Foundation Agent Survey](https://arxiv.org/abs/2504.01990) V1, exploring cross-environment agents."
@@ -24,6 +26,10 @@ educations:
     degree: "Bachelor in Applied Physics"
 
 jobs:
+  - period: "2025.05 - Present"
+    title: "Algorithm Researcher"
+    company: "Xiaomi Mimo-Core"
+    url: "https://github.com/XiaomiMiMo"
   - period: "2025.06 - Present"
     title: "CoFounder"
     company: "Karis"
@@ -76,4 +82,3 @@ talks:
   - date: "2025.04"
     title: "Tencent: The Explosive Rise of Agents - Unlimited Application Space?"
     url: "https://news.qq.com/rain/a/RLV2025031800406900"
-
