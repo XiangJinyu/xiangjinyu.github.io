@@ -2,47 +2,117 @@
 import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
+import { ViewTransitions } from 'astro:transitions';
 
-// 导入本地字体
-import '@fontsource/inter/300.css';
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
-import '@fontsource/playfair-display/400.css';
-import '@fontsource/playfair-display/600.css';
-import '@fontsource/playfair-display/700.css';
-import '@fontsource/playfair-display/400-italic.css';
-
-// KaTeX CSS
-import 'katex/dist/katex.min.css';
+import '@fontsource-variable/newsreader/opsz.css';
+import '@fontsource-variable/newsreader/opsz-italic.css';
 
 interface Props {
 	title: string;
-    description?: string;
+	description?: string;
+	lang?: string;
+	ogImage?: string;
+	schema?: Record<string, unknown>;
 }
 
-const { title, description = "Jinyu Xiang's Research Blog - Exploring AI Agents, Self-Evolution, and Foundation Models." } = Astro.props;
+const {
+	title,
+	description = "Jinyu Xiang — Algorithm Researcher at Xiaomi Mimo-Core. Research on AI Agents, Self-Evolution, and Foundation Models.",
+	lang = 'en',
+	ogImage = '/images/og/site.png',
+	schema,
+} = Astro.props;
+
+const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url);
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content={description} />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
+		<ViewTransitions />
+		<script is:inline>
+			(function () {
+				function applyTheme() {
+					const stored = localStorage.getItem('theme');
+					const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+					document.documentElement.dataset.theme = stored || (prefersDark ? 'dark' : 'light');
+				}
+				applyTheme();
+				document.addEventListener('astro:after-swap', applyTheme);
+
+				if (sessionStorage.getItem('visited')) {
+					document.documentElement.classList.add('no-rise');
+				} else {
+					sessionStorage.setItem('visited', '1');
+				}
+				document.addEventListener('astro:after-swap', () => {
+					document.documentElement.classList.add('no-rise');
+				});
+			})();
+		</script>
+		<link rel="canonical" href={canonical} />
+		<link rel="alternate" type="application/rss+xml" title="Jinyu Xiang's Blog" href="/rss.xml" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<link rel="icon" href="/images/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
+		<link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+		<link rel="manifest" href="/images/site.webmanifest" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@CosmoJinyu" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageUrl} />
 
 		<title>{title}</title>
+		{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
 	</head>
 	<body>
-        <Navbar />
+		<Navbar />
 		<main>
-            <slot />
-        </main>
-        <Footer />
+			<slot />
+		</main>
+		<Footer />
+		<script>
+			function initReveal() {
+				const targets = document.querySelectorAll('.reveal:not(.is-visible)');
+				if (!targets.length) return;
+				const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+				if (reduce || !('IntersectionObserver' in window)) {
+					document.documentElement.classList.add('no-observer');
+					return;
+				}
+				const io = new IntersectionObserver((entries) => {
+					for (const e of entries) {
+						if (e.isIntersecting) {
+							e.target.classList.add('is-visible');
+							io.unobserve(e.target);
+						}
+					}
+				}, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+				targets.forEach(t => io.observe(t));
+			}
+			initReveal();
+			document.addEventListener('astro:page-load', initReveal);
+		</script>
 	</body>
 </html>
-

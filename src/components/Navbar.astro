@@ -1,30 +1,69 @@
 ---
-// 导航组件
+// Site navigation
 ---
-<header>
+<header transition:persist="navbar">
     <nav class="nav-container">
         <a href="/" class="logo">
-            <span></span> Jinyu Xiang
+            <span class="dot"></span> Jinyu Xiang
         </a>
         <div class="nav-links">
             <a href="/#about-me">About</a>
             <a href="/#news">News</a>
             <a href="/#publications">Publications</a>
             <a href="/blog">Blog</a>
+            <button id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
         </div>
     </nav>
 </header>
 
+<script>
+    function initThemeToggle() {
+        const btn = document.getElementById('theme-toggle');
+        if (!btn || btn.dataset.bound) return;
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', (e) => {
+            const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+            const apply = () => {
+                document.documentElement.dataset.theme = next;
+                localStorage.setItem('theme', next);
+            };
+
+            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!document.startViewTransition || reduce) { apply(); return; }
+
+            const rect = btn.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+            document.documentElement.classList.add('theme-inking');
+            const t = document.startViewTransition(apply);
+            t.ready.then(() => {
+                document.documentElement.animate(
+                    { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+                    { duration: 550, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' }
+                );
+            });
+            t.finished.finally(() => document.documentElement.classList.remove('theme-inking'));
+        });
+    }
+    initThemeToggle();
+    document.addEventListener('astro:after-swap', initThemeToggle);
+</script>
+
 <style>
     header {
-        padding: 2rem 0;
+        padding: 1.6rem 0;
         position: sticky;
         top: 0;
-        background: rgba(252, 251, 249, 0.85);
+        background: var(--nav-bg);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         z-index: 100;
-        border-bottom: 1px solid rgba(0,0,0,0.03);
+        border-bottom: 1px solid var(--rule-hairline);
     }
 
     .nav-container {
@@ -34,29 +73,32 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 1rem;
     }
 
     .logo {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.6rem; /* 1.5 -> 1.8 -> 1.6 (平衡点) */
-        font-weight: 700;
+        font-family: var(--font-serif);
+        font-size: 1.45rem;
+        font-weight: 600;
         color: var(--text-primary);
         display: flex;
         align-items: center;
-        gap: 0.7rem; /* 间距微调 */
+        gap: 0.6rem;
+        white-space: nowrap;
     }
-    
-    .logo span {
+
+    .dot {
         display: inline-block;
-        width: 10px; /* 回复到 10px，更精致 */
-        height: 10px;
+        width: 9px;
+        height: 9px;
         background-color: var(--accent-color);
         border-radius: 50%;
     }
 
     .nav-links {
         display: flex;
-        gap: 2.5rem;
+        gap: 2.2rem;
+        align-items: center;
     }
 
     .nav-links a {
@@ -64,13 +106,60 @@
         color: var(--text-secondary);
         font-weight: 500;
     }
-    
+
     .nav-links a:hover {
         color: var(--text-primary);
     }
 
+    #theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: 1px solid var(--rule-hairline);
+        border-radius: 4px;
+        width: 28px;
+        height: 28px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: color 0.2s, border-color 0.2s;
+    }
+
+    #theme-toggle:hover {
+        color: var(--accent-color);
+        border-color: var(--accent-color);
+    }
+
+    .icon-moon { display: block; }
+    .icon-sun { display: none; }
+
+    :global([data-theme='dark']) .icon-moon { display: none; }
+    :global([data-theme='dark']) .icon-sun { display: block; }
+
     @media (max-width: 768px) {
-        .nav-links { display: none; }
+        header {
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+        }
+
+        .nav-links {
+            gap: 1.4rem;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
     }
 </style>
-

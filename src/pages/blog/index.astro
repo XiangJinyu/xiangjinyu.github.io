@@ -1,31 +1,27 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { formatDate } from '../../utils/format';
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
 const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-function formatDate(date: Date) {
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
-}
 ---
 
 <Layout title="Blog - Jinyu Xiang">
     <div class="container blog-page">
         <header class="page-header">
+            <span class="section-label">Writing</span>
             <h1>Blog</h1>
             <p>Thoughts on AI Agents, Self-Evolution, and Foundation Models.</p>
         </header>
 
-        <ul class="research-list">
+        <ul class="spine-list post-list">
             {sortedPosts.map(post => (
-                <li class="research-item">
-                    <div class="item-date mono-font">{formatDate(post.data.date)}</div>
-                    <div class="item-content">
-                        <h3><a href={`/blog/${post.slug}`}>{post.data.title}</a></h3>
-                        <p class="item-abstract">
-                            {post.data.abstract}
-                        </p>
+                <li>
+                    <span class="meta-date">{formatDate(post.data.date)}</span>
+                    <div class="entry">
+                        <h3 transition:name={`post-title-${post.slug}`}><a href={`/blog/${post.slug}`}>{post.data.title}</a></h3>
+                        <p class="item-abstract">{post.data.abstract}</p>
                         <div class="item-tags">
                             {post.data.tags.map(tag => (
                                 <span class="tag">{tag}</span>
@@ -41,110 +37,62 @@ function formatDate(date: Date) {
 <style>
     .blog-page {
         margin-top: 4rem;
-        margin-bottom: 6rem;
+        margin-bottom: 4rem;
     }
 
     .page-header {
-        margin-bottom: 4rem;
-        border-bottom: 2px solid var(--text-primary);
-        padding-bottom: 1.5rem;
+        margin-bottom: 3.5rem;
+        border-bottom: 1px solid var(--rule-hairline);
+        padding-bottom: 1.8rem;
     }
 
     .page-header h1 {
         font-size: 3rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.6rem;
     }
 
     .page-header p {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         color: var(--text-secondary);
     }
 
-    .research-list {
-        list-style: none;
-        border-top: 1px solid var(--text-primary);
+    .post-list > li {
+        padding: 0;
+        margin-bottom: 3rem;
     }
 
-    .research-item {
-        border-bottom: 1px solid var(--border-color);
-        padding: 2.5rem 0;
-        display: grid;
-        grid-template-columns: 180px 1fr;
-        gap: 2rem;
-        transition: all 0.3s;
-    }
-
-    .research-item:hover {
-        background-color: rgba(0,0,0,0.015);
-        padding-left: 1rem;
-        padding-right: 1rem;
-        margin-left: -1rem;
-        margin-right: -1rem;
-        border-radius: 4px;
-    }
-
-    .item-date {
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-        padding-top: 0.4rem;
-        opacity: 0.8;
-    }
-
-    .item-content h3 {
-        font-size: 1.6rem;
-        margin-bottom: 0.8rem;
+    .entry h3 {
+        font-size: 1.55rem;
+        margin-bottom: 0.6rem;
         font-weight: 600;
-        letter-spacing: -0.01em;
+        line-height: 1.3;
     }
 
-    .item-content h3 a {
+    .entry h3 a {
         color: var(--text-primary);
-        text-decoration: none;
     }
 
-    .item-content h3 a:hover {
+    .entry h3 a:hover {
         color: var(--accent-color);
     }
 
     .item-abstract {
         color: var(--text-secondary);
-        font-size: 1.05rem;
-        max-width: 700px;
-        margin-bottom: 1.2rem;
-        font-weight: 300;
+        font-size: 1rem;
+        max-width: var(--measure);
+        margin-bottom: 1rem;
+        line-height: 1.65;
     }
 
     .item-tags {
         display: flex;
-        gap: 0.8rem;
-    }
-
-    .tag {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        border: 1px solid #d1d1d1;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        color: var(--text-secondary);
-        transition: all 0.2s;
-        text-transform: uppercase;
-    }
-
-    .research-item:hover .tag {
-        border-color: var(--text-primary);
-        color: var(--text-primary);
+        gap: 0.6rem;
+        flex-wrap: wrap;
     }
 
     @media (max-width: 768px) {
-        .research-item {
-            grid-template-columns: 1fr;
-            gap: 0.8rem;
-            padding: 2rem 0;
-        }
-
         .page-header h1 {
-            font-size: 2.5rem;
+            font-size: 2.4rem;
         }
     }
 </style>
-

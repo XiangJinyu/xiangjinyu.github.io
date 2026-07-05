@@ -2,51 +2,73 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection, getEntry } from 'astro:content';
 import { marked } from 'marked';
+import { formatDate } from '../utils/format';
+import { Content as AboutContent } from '../about.md';
+import { Image } from 'astro:assets';
+import SectionIndex from '../components/SectionIndex.astro';
+import avatarImg from '../assets/images/avatar.jpg';
+import aflowImg from '../assets/images/aflow.png';
+import spoImg from '../assets/images/spo.png';
+import openmanusImg from '../assets/images/openmanus.png';
+import foundationImg from '../assets/images/foundationagent-survey.png';
 
-// 配置 marked 用于行内解析
-marked.setOptions({
-  breaks: true,
-  gfm: true,
-});
+const pubImages: Record<string, ImageMetadata> = {
+  '/images/aflow.png': aflowImg,
+  '/images/spo.png': spoImg,
+  '/images/openmanus.png': openmanusImg,
+  '/images/foundationagent-survey.png': foundationImg,
+};
 
-// 辅助函数：解析 Markdown 为 HTML
+marked.setOptions({ breaks: true, gfm: true });
+
 function parseMarkdown(text: string): string {
-  return marked.parseInline(text);
+  return marked.parseInline(text) as string;
 }
 
-// 读取 About Me 内容
-const aboutContent = await Astro.glob('../about.md');
-const { Content: AboutContent } = await aboutContent[0].compiledContent ? aboutContent[0] : { Content: () => null };
+function enDash(period: string): string {
+  return period.replace(/\s*-\s*/, '–').replace('Present', 'present');
+}
 
-// 读取主页数据
 const homepageData = await getEntry('data', 'homepage');
 
-// 读取文章（排除草稿）
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
 const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-// 读取出版物
 const publications = await getCollection('publications');
 const sortedPublications = publications.sort((a, b) => a.data.order - b.data.order);
+const featuredPubs = sortedPublications.filter(p => p.data.image);
+const otherPubs = sortedPublications.filter(p => !p.data.image);
 
-// 格式化日期
-function formatDate(date: Date) {
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
-}
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Jinyu Xiang',
+  url: 'https://xiangjinyu.github.io',
+  image: 'https://xiangjinyu.github.io/images/avatar.jpg',
+  jobTitle: 'Algorithm Researcher',
+  worksFor: { '@type': 'Organization', name: 'Xiaomi Mimo-Core' },
+  email: 'mailto:xiangjy2001@gmail.com',
+  sameAs: [
+    'https://github.com/XiangJinyu',
+    'https://twitter.com/CosmoJinyu',
+    'https://scholar.google.com/citations?user=NJv62qoAAAAJ',
+  ],
+  knowsAbout: ['AI Agents', 'Agent Self-Evolution', 'Foundation Models', 'Large Language Models'],
+};
 ---
 
-<Layout title="Jinyu Xiang">
-    <!-- About Me Section -->
-    <section class="hero">
-        <span class="anchor" id="about-me"></span>
+<Layout title="Jinyu Xiang" schema={personSchema}>
+    <SectionIndex />
+    <!-- About -->
+    <section class="hero" id="about-me">
         <div class="about-header">
-            <div class="avatar">
-                <img src="/images/avatar.jpg" alt="Jinyu Xiang" />
+            <div class="avatar rise" style="--stagger: 1">
+                <Image src={avatarImg} alt="Jinyu Xiang" width={320} height={320} format="webp" quality={85} />
             </div>
             <div class="intro">
-                <h1>Jinyu Xiang</h1>
-                <p class="tagline">Algorithm Researcher at Xiaomi Mimo-Core · AI Agent Researcher · Musician</p>
-                <div class="social-links">
+                <h1 class="rise" style="--stagger: 0">Jinyu Xiang</h1>
+                <p class="tagline rise" style="--stagger: 2">Algorithm Researcher at Xiaomi Mimo-Core · AI Agent Researcher · Musician</p>
+                <div class="social-links rise" style="--stagger: 3">
                     <a href="mailto:xiangjy2001@gmail.com" title="Email">Email</a>
                     <a href="https://github.com/XiangJinyu" title="GitHub">GitHub</a>
                     <a href="https://twitter.com/CosmoJinyu" title="Twitter">Twitter</a>
@@ -54,44 +76,48 @@ function formatDate(date: Date) {
                 </div>
             </div>
         </div>
-        <div class="about-content">
-            {aboutContent[0] && (
-                <aboutContent[0].Content />
-            )}
+        <div class="about-content rise" style="--stagger: 4">
+            <AboutContent />
         </div>
     </section>
 
-    <!-- News Section -->
-    <section class="section">
-        <span class="anchor" id="news"></span>
-        <h2>🔥 News</h2>
-        <ul class="news-list">
+    <!-- News -->
+    <section class="section reveal" id="news">
+        <header class="section-head">
+            <span class="section-label">01 — News</span>
+            <h2>News</h2>
+        </header>
+        <ul class="spine-list">
             {homepageData?.data.news?.map(item => (
                 <li>
-                    <span class="date">{item.date}</span>
-                    <span set:html={parseMarkdown(item.content)} />
+                    <span class="meta-date">{item.date}</span>
+                    <span class="entry" set:html={parseMarkdown(item.content)} />
                 </li>
             ))}
         </ul>
     </section>
 
-    <!-- Publications Section -->
-    <section class="section">
-        <span class="anchor" id="publications"></span>
-        <h2>📝 Selected Publications</h2>
-        
-        {sortedPublications.map(async (pub) => {
+    <!-- Publications -->
+    <section class="section reveal" id="publications">
+        <header class="section-head">
+            <span class="section-label">02 — Research</span>
+            <h2>Selected Publications</h2>
+        </header>
+
+        {featuredPubs.map(async (pub) => {
             const { Content } = await pub.render();
+            const localImage = pub.data.image ? pubImages[pub.data.image] : undefined;
             return (
-                <div class={`publication ${pub.data.image ? '' : 'no-image'}`}>
-                    {pub.data.image && (
-                        <div class="pub-image">
-                            <img src={pub.data.image} alt={pub.data.title} />
-                            <span class="badge">{pub.data.badge}</span>
-                        </div>
-                    )}
+                <div class="publication">
+                    <div class="pub-side">
+                        <a href={pub.data.url} class="pub-image">
+                            {localImage
+                                ? <Image src={localImage} alt={pub.data.title} width={560} format="webp" quality={82} />
+                                : <img src={pub.data.image} alt={pub.data.title} loading="lazy" />}
+                        </a>
+                        <span class="meta-date">{pub.data.badge.toUpperCase()}</span>
+                    </div>
                     <div class="pub-content">
-                        {!pub.data.image && <span class="badge inline-badge">{pub.data.badge}</span>}
                         <h3><a href={pub.data.url}>{pub.data.title}</a></h3>
                         <p class="authors" set:html={parseMarkdown(pub.data.authors)} />
                         <div class="description">
@@ -101,60 +127,84 @@ function formatDate(date: Date) {
                 </div>
             );
         })}
+
+        <ul class="spine-list compact-pubs">
+            {otherPubs.map(pub => (
+                <li>
+                    <span class="meta-date">{pub.data.badge.toUpperCase()}</span>
+                    <div class="entry">
+                        <h3 class="compact-title"><a href={pub.data.url}>{pub.data.title}</a></h3>
+                        <p class="compact-authors" set:html={parseMarkdown(pub.data.authors)} />
+                    </div>
+                </li>
+            ))}
+        </ul>
     </section>
 
-    <!-- Job Experience Section -->
-    <section class="section">
-        <span class="anchor" id="internships"></span>
-        <h2>💻 Job Experience</h2>
-        <ul class="timeline-list">
+    <!-- Experience -->
+    <section class="section reveal" id="internships">
+        <header class="section-head">
+            <span class="section-label">03 — Experience</span>
+            <h2>Job Experience</h2>
+        </header>
+        <ul class="spine-list">
             {homepageData?.data.jobs?.map(item => (
                 <li>
-                    <span class="date">{item.period}</span>
-                    {item.title}, {item.url ? <a href={item.url}>{item.company}</a> : item.company}, China.
+                    <span class="meta-date">{enDash(item.period)}</span>
+                    <span class="entry">
+                        {item.title}, {item.url ? <a href={item.url}>{item.company}</a> : item.company}, China.
+                    </span>
                 </li>
             ))}
         </ul>
     </section>
 
-    <!-- Competitions Section -->
-    <section class="section">
-        <span class="anchor" id="competitions"></span>
-        <h2>🎯 Competitions and Side Projects</h2>
-        <ul class="timeline-list">
+    <!-- Projects -->
+    <section class="section reveal" id="competitions">
+        <header class="section-head">
+            <span class="section-label">04 — Projects</span>
+            <h2>Competitions and Side Projects</h2>
+        </header>
+        <ul class="spine-list">
             {homepageData?.data.projects?.map(item => (
                 <li>
-                    <span class="date">{item.date}</span>
-                    <a href={item.url}>{item.title}</a>, <span set:html={parseMarkdown(item.description)} />
+                    <span class="meta-date">{item.date}</span>
+                    <span class="entry">
+                        <a href={item.url}>{item.title}</a>, <span set:html={parseMarkdown(item.description)} />
+                    </span>
                 </li>
             ))}
         </ul>
     </section>
 
-    <!-- Invited Talks Section -->
-    <section class="section">
-        <span class="anchor" id="invited-talks"></span>
-        <h2>🔈 Invited Talks</h2>
-        <ul class="timeline-list">
+    <!-- Talks -->
+    <section class="section reveal" id="invited-talks">
+        <header class="section-head">
+            <span class="section-label">05 — Talks</span>
+            <h2>Invited Talks</h2>
+        </header>
+        <ul class="spine-list">
             {homepageData?.data.talks?.map(item => (
                 <li>
-                    <span class="date">{item.date}</span>
-                    <a href={item.url}>{item.title}</a>
+                    <span class="meta-date">{item.date}</span>
+                    <span class="entry"><a href={item.url} class="quiet-link">{item.title}</a></span>
                 </li>
             ))}
         </ul>
     </section>
 
-    <!-- Blog Section -->
-    <section class="section">
-        <span class="anchor" id="blog"></span>
-        <h2>📚 Recent Blog Posts</h2>
-        <ul class="blog-list">
+    <!-- Blog -->
+    <section class="section reveal" id="blog">
+        <header class="section-head">
+            <span class="section-label">06 — Writing</span>
+            <h2>Recent Blog Posts</h2>
+        </header>
+        <ul class="spine-list blog-list">
             {sortedPosts.slice(0, 5).map(post => (
-                <li class="blog-item">
-                    <span class="date mono-font">{formatDate(post.data.date)}</span>
-                    <div>
-                        <h3><a href={`/blog/${post.slug}`}>{post.data.title}</a></h3>
+                <li>
+                    <span class="meta-date">{formatDate(post.data.date)}</span>
+                    <div class="entry">
+                        <h3 class="post-title" transition:name={`post-title-${post.slug}`}><a href={`/blog/${post.slug}`}>{post.data.title}</a></h3>
                         <p class="abstract">{post.data.abstract}</p>
                         <div class="tags">
                             {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
@@ -170,57 +220,59 @@ function formatDate(date: Date) {
 </Layout>
 
 <style>
-    /* Hero / About Section */
+    /* Hero */
     .hero {
+        position: relative;
         max-width: var(--container-width);
-        margin: 3rem auto 4rem;
+        margin: 3.5rem auto 5rem;
         padding: 0 1.5rem;
+        scroll-margin-top: 90px;
     }
 
     .about-header {
-        display: flex;
+        position: relative;
+        display: grid;
+        grid-template-columns: var(--spine-width) 1fr;
+        gap: var(--spine-gap);
         align-items: center;
-        gap: 2.5rem;
         margin-bottom: 2.5rem;
     }
 
-    .avatar {
-        flex-shrink: 0;
-    }
-
-    .avatar img {
-        width: 160px;
-        height: 160px;
+    .avatar :global(img) {
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        aspect-ratio: 1;
         border-radius: 50%;
         object-fit: cover;
-        border: 4px solid var(--border-color);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 4px rgba(26, 22, 12, 0.12);
+        display: block;
     }
 
     .intro h1 {
-        font-size: 2.5rem;
-        line-height: 1.2;
-        margin-bottom: 0.5rem;
+        font-size: 2.6rem;
+        line-height: 1.15;
+        margin-bottom: 0.4rem;
     }
 
     .tagline {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         color: var(--text-secondary);
-        margin-bottom: 1rem;
+        margin-bottom: 1.1rem;
     }
 
     .social-links {
         display: flex;
-        gap: 1.2rem;
+        gap: 0.8rem;
         flex-wrap: wrap;
     }
 
     .social-links a {
         font-family: var(--font-mono);
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         color: var(--text-secondary);
-        padding: 0.3rem 0.6rem;
-        border: 1px solid var(--border-color);
+        padding: 0.28rem 0.6rem;
+        border: 1px solid var(--rule-hairline);
         border-radius: 4px;
         transition: all 0.2s;
     }
@@ -229,154 +281,91 @@ function formatDate(date: Date) {
         color: var(--accent-color);
         border-color: var(--accent-color);
     }
-    
+
+    .about-content {
+        padding-left: calc(var(--spine-width) + var(--spine-gap));
+    }
+
     .about-content :global(p) {
-        font-size: 1.1rem;
+        font-size: 1.08rem;
+        max-width: var(--measure);
         color: var(--text-primary);
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.4rem;
         line-height: 1.8;
     }
 
     .about-content :global(a) {
         color: var(--accent-color);
-        text-decoration: none;
-        border-bottom: 1px solid var(--accent-color);
     }
 
     .about-content :global(a:hover) {
         color: var(--text-primary);
-        border-bottom-color: var(--text-primary);
     }
 
-    /* Section Styles */
+    /* Sections */
     .section {
         max-width: var(--container-width);
-        margin: 0 auto 5rem;
+        margin: 0 auto 5.5rem;
         padding: 0 1.5rem;
+        scroll-margin-top: 90px;
     }
 
-    .section h2 {
-        font-size: 1.8rem;
-        margin-bottom: 2rem;
-        border-bottom: 2px solid var(--text-primary);
-        padding-bottom: 0.5rem;
+    .section-head {
+        margin-bottom: 2.2rem;
+        padding-bottom: 0.9rem;
+        border-bottom: 1px solid var(--rule-hairline);
     }
 
-    .anchor {
-        display: block;
-        position: relative;
-        top: -80px;
-        visibility: hidden;
-    }
-
-    /* News List */
-    .news-list {
-        list-style: none;
-        padding: 0;
-    }
-
-    .news-list li {
-        margin-bottom: 1rem;
-        padding-left: 0;
-        font-size: 1.05rem;
-        line-height: 1.7;
-    }
-
-    .news-list :global(a) {
-        color: var(--accent-color);
-        text-decoration: none;
-    }
-
-    .news-list :global(a:hover) {
-        border-bottom: 1px solid var(--accent-color);
-    }
-
-    .news-list :global(strong) {
-        font-weight: 700;
-        color: var(--text-primary);
-    }
-
-    .date {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.85rem;
-        color: var(--accent-color);
+    .section-head h2 {
+        font-size: 1.9rem;
         font-weight: 600;
-        margin-right: 1rem;
     }
 
-    /* Timeline List (for Educations, Jobs, etc.) */
-    .timeline-list {
-        list-style: none;
-        padding: 0;
-    }
-
-    .timeline-list li {
-        margin-bottom: 1.5rem;
-        font-size: 1.05rem;
-        line-height: 1.7;
-    }
-
-    .timeline-list a {
-        color: var(--accent-color);
-        text-decoration: none;
-    }
-
-    .timeline-list a:hover {
-        border-bottom: 1px solid var(--accent-color);
-    }
-
-    /* Publications */
+    /* Publications — featured rows on the spine grid, image in the spine column */
     .publication {
         display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 2rem;
-        margin-bottom: 3rem;
-        padding-bottom: 3rem;
-        border-bottom: 1px solid var(--border-color);
+        grid-template-columns: var(--spine-width) 1fr;
+        gap: var(--spine-gap);
+        margin-bottom: 2.4rem;
+        padding-bottom: 2.4rem;
+        border-bottom: 1px solid var(--rule-hairline);
     }
 
-    .publication.no-image {
-        grid-template-columns: 1fr;
+    .pub-side {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
     }
 
     .pub-image {
-        position: relative;
+        display: block;
     }
 
-    .pub-image img {
+    .pub-image :global(img) {
         width: 100%;
-        border-radius: 6px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .badge {
-        position: absolute;
-        top: 0.5rem;
-        left: 0.5rem;
-        background: var(--accent-color);
-        color: white;
-        padding: 0.3rem 0.7rem;
+        height: auto;
+        aspect-ratio: 4 / 3;
+        object-fit: contain;
+        background: var(--bg-card);
+        border: 1px solid var(--rule-hairline);
         border-radius: 4px;
-        font-size: 0.75rem;
-        font-family: 'JetBrains Mono', monospace;
-        font-weight: 600;
+        display: block;
+        transition: border-color 0.2s;
     }
 
-    .inline-badge {
-        position: static;
-        display: inline-block;
-        margin-bottom: 0.8rem;
+    .pub-image:hover :global(img) {
+        border-color: var(--accent-color);
     }
 
     .pub-content h3 {
-        font-size: 1.4rem;
-        margin-bottom: 0.8rem;
+        font-size: 1.45rem;
+        line-height: 1.3;
+        margin-bottom: 0.7rem;
         font-weight: 600;
     }
 
     .pub-content h3 a {
         color: var(--text-primary);
-        text-decoration: none;
     }
 
     .pub-content h3 a:hover {
@@ -384,51 +373,80 @@ function formatDate(date: Date) {
     }
 
     .authors {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         color: var(--text-secondary);
         margin-bottom: 0.8rem;
         font-style: italic;
+        max-width: var(--measure);
     }
 
     .authors :global(strong) {
-        font-weight: 700;
+        font-weight: 600;
+        font-style: normal;
         color: var(--text-primary);
     }
 
     .description :global(p) {
-        font-size: 1rem;
-        color: var(--text-primary);
+        font-size: 0.98rem;
+        color: var(--text-secondary);
         line-height: 1.7;
+        max-width: var(--measure);
         margin: 0;
     }
 
-    /* Blog List */
-    .blog-list {
-        list-style: none;
-        padding: 0;
+    /* Publications — compact list */
+    .compact-pubs {
+        margin-top: 0.4rem;
     }
 
-    .blog-item {
-        display: grid;
-        grid-template-columns: 150px 1fr;
-        gap: 1.5rem;
-        margin-bottom: 2.5rem;
-        padding-bottom: 2.5rem;
-        border-bottom: 1px solid var(--border-color);
+    .compact-pubs > li {
+        margin-bottom: 1.8rem;
     }
 
-    .blog-item h3 {
-        font-size: 1.3rem;
-        margin-bottom: 0.5rem;
+    .compact-title {
+        font-size: 1.15rem;
+        line-height: 1.35;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .compact-title a {
+        color: var(--text-primary);
+    }
+
+    .compact-title a:hover {
+        color: var(--accent-color);
+    }
+
+    .compact-authors {
+        font-size: 0.85rem;
+        color: var(--text-tertiary);
+        font-style: italic;
+        line-height: 1.55;
+    }
+
+    .compact-authors :global(strong) {
+        font-weight: 600;
+        font-style: normal;
+        color: var(--text-secondary);
+    }
+
+    /* Blog list */
+    .blog-list > li {
+        margin-bottom: 2.4rem;
+    }
+
+    .post-title {
+        font-size: 1.35rem;
+        margin-bottom: 0.4rem;
         font-weight: 600;
     }
 
-    .blog-item h3 a {
+    .post-title a {
         color: var(--text-primary);
-        text-decoration: none;
     }
 
-    .blog-item h3 a:hover {
+    .post-title a:hover {
         color: var(--accent-color);
     }
 
@@ -436,7 +454,8 @@ function formatDate(date: Date) {
         color: var(--text-secondary);
         font-size: 0.95rem;
         margin-bottom: 0.8rem;
-        line-height: 1.6;
+        line-height: 1.65;
+        max-width: var(--measure);
     }
 
     .tags {
@@ -445,44 +464,35 @@ function formatDate(date: Date) {
         flex-wrap: wrap;
     }
 
-    .tag {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.7rem;
-        background: #f0f0f0;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        color: var(--text-secondary);
-    }
-
     .view-all {
-        margin-top: 2rem;
-        text-align: center;
+        margin-top: 2.2rem;
+        padding-left: calc(var(--spine-width) + var(--spine-gap));
     }
 
     .view-all a {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.9rem;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
         color: var(--accent-color);
-        text-decoration: none;
-        border-bottom: 1px solid var(--accent-color);
-        padding-bottom: 2px;
     }
 
     .view-all a:hover {
         color: var(--text-primary);
-        border-bottom-color: var(--text-primary);
     }
 
     @media (max-width: 768px) {
         .about-header {
-            flex-direction: column;
+            grid-template-columns: 1fr;
             text-align: center;
             gap: 1.5rem;
         }
 
-        .avatar img {
-            width: 120px;
-            height: 120px;
+        .avatar :global(img) {
+            margin: 0 auto;
+            max-width: 120px;
+        }
+
+        .about-content {
+            padding-left: 0;
         }
 
         .intro h1 {
@@ -495,11 +505,20 @@ function formatDate(date: Date) {
 
         .publication {
             grid-template-columns: 1fr;
+            gap: 1rem;
         }
 
-        .blog-item {
-            grid-template-columns: 1fr;
-            gap: 0.8rem;
+        .pub-side {
+            flex-direction: row;
+            align-items: flex-end;
+        }
+
+        .pub-image {
+            max-width: 220px;
+        }
+
+        .view-all {
+            padding-left: 0;
         }
     }
 </style>

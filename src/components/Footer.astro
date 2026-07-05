@@ -1,11 +1,53 @@
 ---
-// Footer组件 - 简洁版
+const year = new Date().getFullYear();
 ---
-<footer></footer>
+<footer>
+    <div class="footer-inner">
+        <span class="copyright mono-font">© {year} Jinyu Xiang</span>
+        <span class="footer-links">
+            <a href="mailto:xiangjy2001@gmail.com">Email</a>
+            <a href="https://github.com/XiangJinyu">GitHub</a>
+            <a href="https://twitter.com/CosmoJinyu">Twitter</a>
+            <a href="https://scholar.google.com/citations?user=NJv62qoAAAAJ&hl=en">Scholar</a>
+            <a href="/rss.xml">RSS</a>
+        </span>
+    </div>
+</footer>
 
 <style>
     footer {
-        margin-top: 4rem;
-        padding-bottom: 2rem;
+        margin-top: 6rem;
+        border-top: 1px solid var(--rule-hairline);
+    }
+
+    .footer-inner {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 2rem 1.5rem 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .copyright {
+        font-size: 0.75rem;
+        color: var(--text-tertiary);
+    }
+
+    .footer-links {
+        display: flex;
+        gap: 1.4rem;
+    }
+
+    .footer-links a {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-tertiary);
+    }
+
+    .footer-links a:hover {
+        color: var(--accent-color);
     }
 </style>
