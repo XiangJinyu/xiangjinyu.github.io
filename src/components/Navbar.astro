@@ -64,6 +64,9 @@
         -webkit-backdrop-filter: blur(12px);
         z-index: 100;
         border-bottom: 1px solid var(--rule-hairline);
+        /* isolate on its own compositor layer: prevents repaint flicker
+           from backdrop-filter + sticky on WebKit/Blink */
+        transform: translateZ(0);
     }
 
     .nav-container {
@@ -93,8 +96,20 @@
         height: 9px;
         background-color: var(--accent-color);
         border-radius: 50%;
-        animation: dot-breathe 5s ease-in-out infinite;
-        transform-origin: center;
+    }
+
+    .logo:hover .dot {
+        animation: dot-hop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes dot-hop {
+        0%   { transform: translateY(0); }
+        40%  { transform: translateY(-5px); }
+        100% { transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .dot { animation: none !important; }
     }
 
     @keyframes dot-breathe {
