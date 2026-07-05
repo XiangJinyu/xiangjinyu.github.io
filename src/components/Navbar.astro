@@ -4,7 +4,7 @@
 <header transition:persist="navbar">
     <nav class="nav-container">
         <a href="/" class="logo">
-            <span class="dot"></span> Jinyu Xiang
+            Jinyu Xiang
         </a>
         <div class="nav-links">
             <a href="/#about-me">About</a>
@@ -84,51 +84,7 @@
         font-size: 1.45rem;
         font-weight: 600;
         color: var(--text-primary);
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
         white-space: nowrap;
-    }
-
-    .dot {
-        display: inline-block;
-        width: 9px;
-        height: 9px;
-        background-color: var(--accent-color);
-        border-radius: 50%;
-    }
-
-    .logo:hover .dot {
-        animation: dot-hop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes dot-hop {
-        0%   { transform: translateY(0); }
-        40%  { transform: translateY(-5px); }
-        100% { transform: translateY(0); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .dot { animation: none !important; }
-    }
-
-    @keyframes dot-breathe {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50%      { transform: scale(0.82); opacity: 0.75; }
-    }
-
-    .logo:hover .dot {
-        animation: dot-hop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes dot-hop {
-        0%   { transform: translateY(0); }
-        40%  { transform: translateY(-5px); }
-        100% { transform: translateY(0); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .dot { animation: none; }
     }
 
     .nav-links {
