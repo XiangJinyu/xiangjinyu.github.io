@@ -12,6 +12,7 @@ const sections = [
 ];
 ---
 <nav class="section-index" aria-label="Section index">
+    <span class="idx-dot" aria-hidden="true"></span>
     <ul>
         {sections.map(s => (
             <li>
@@ -31,6 +32,20 @@ const sections = [
         transform: translateY(-50%);
         left: calc(50% - var(--container-width) / 2 - 7.5rem);
         z-index: 50;
+    }
+
+    /* The travelling dot: slides along the left rail to the active item */
+    .idx-dot {
+        position: absolute;
+        left: -2px;
+        top: var(--dot-y, 0.62rem);
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--accent-color);
+        transform: translateX(-50%);
+        transition: top 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        pointer-events: none;
     }
 
     /* Hide when the margin can't fit it */
@@ -83,7 +98,6 @@ const sections = [
 
     a.active {
         color: var(--accent-color);
-        border-left-color: var(--accent-color);
     }
 
     a.active .idx-label {
@@ -115,6 +129,13 @@ const sections = [
             current?.classList.remove('active');
             link.classList.add('active');
             current = link;
+            // move the rail dot to the active row's vertical center
+            const navBox = (nav as HTMLElement).getBoundingClientRect();
+            const linkBox = link.getBoundingClientRect();
+            (nav as HTMLElement).style.setProperty(
+                '--dot-y',
+                `${linkBox.top - navBox.top + linkBox.height / 2 - 2.5}px`
+            );
         }
 
         const io = new IntersectionObserver((entries) => {

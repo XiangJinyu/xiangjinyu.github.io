@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="404 — Jinyu Xiang" description="Page not found.">
+    <div class="container nf">
+        <p class="nf-code mono-font">HTTP 404</p>
+        <h1>// TODO: this page</h1>
+        <p class="nf-note">
+            Whatever was here has moved, was never written, or exists only
+            in a branch that never merged.
+        </p>
+        <p class="nf-links mono-font">
+            <a href="/">← back to index</a>
+            <span class="nf-sep">·</span>
+            <a href="/blog">blog</a>
+            <span class="nf-sep">·</span>
+            <a href="/resume.txt">resume.txt</a>
+        </p>
+    </div>
+</Layout>
+
+<style>
+    .nf {
+        margin: 22vh auto 20vh;
+        max-width: 640px;
+    }
+
+    .nf-code {
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        color: var(--text-tertiary);
+        margin-bottom: 1rem;
+    }
+
+    h1 {
+        font-size: 2.6rem;
+        line-height: 1.15;
+        margin-bottom: 1.2rem;
+    }
+
+    .nf-note {
+        color: var(--text-secondary);
+        max-width: 46ch;
+        margin-bottom: 2.2rem;
+        line-height: 1.7;
+    }
+
+    .nf-links {
+        font-size: 0.85rem;
+        display: flex;
+        gap: 0.9rem;
+        align-items: baseline;
+    }
+
+    .nf-links a {
+        color: var(--accent-color);
+    }
+
+    .nf-links a:hover {
+        color: var(--text-primary);
+    }
+
+    .nf-sep {
+        color: var(--text-tertiary);
+    }
+</style>

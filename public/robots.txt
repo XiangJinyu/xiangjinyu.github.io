@@ -1,0 +1,11 @@
+# robots.txt — humans and machines both welcome
+
+User-agent: *
+Allow: /
+
+Sitemap: https://xiangjinyu.github.io/sitemap-index.xml
+
+# For LLM agents: a structured summary of this site lives at
+#   https://xiangjinyu.github.io/llms.txt
+# A plain-text resume lives at
+#   https://xiangjinyu.github.io/resume.txt

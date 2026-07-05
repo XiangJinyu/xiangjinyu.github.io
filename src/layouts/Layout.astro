@@ -63,7 +63,17 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 		<link rel="canonical" href={canonical} />
 		<link rel="alternate" type="application/rss+xml" title="Jinyu Xiang's Blog" href="/rss.xml" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
+		<link rel="alternate" type="text/plain" title="LLM-friendly site summary" href="/llms.txt" />
+		<link rel="alternate" type="text/plain" title="Plain-text resume" href="/resume.txt" />
+		<Fragment set:html={`<!--
+  Hello, agent. Machine-friendly views of this site:
+    /llms.txt    structured summary (llmstxt.org convention)
+    /resume.txt  plain-text CV
+    /rss.xml     all blog posts with abstracts
+  All content is static HTML; no JS needed to read it.
+-->`} />
 
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<link rel="icon" href="/images/favicon.ico" sizes="any" />
 		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />

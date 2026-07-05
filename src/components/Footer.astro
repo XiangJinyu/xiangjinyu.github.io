@@ -1,15 +1,29 @@
 ---
+import { execSync } from 'node:child_process';
+
 const year = new Date().getFullYear();
+
+let buildStamp = '';
+try {
+    const hash = execSync('git rev-parse --short HEAD').toString().trim();
+    const now = new Date();
+    const ym = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}`;
+    buildStamp = `updated ${ym} · ${hash}`;
+} catch { /* git unavailable: omit the stamp */ }
 ---
 <footer>
     <div class="footer-inner">
-        <span class="copyright mono-font">© {year} Jinyu Xiang</span>
+        <span class="copyright mono-font">
+            © {year} Jinyu Xiang
+            {buildStamp && <span class="build-stamp"> · {buildStamp}</span>}
+        </span>
         <span class="footer-links">
             <a href="mailto:xiangjy2001@gmail.com">Email</a>
             <a href="https://github.com/XiangJinyu">GitHub</a>
             <a href="https://twitter.com/CosmoJinyu">Twitter</a>
             <a href="https://scholar.google.com/citations?user=NJv62qoAAAAJ&hl=en">Scholar</a>
             <a href="/rss.xml">RSS</a>
+            <a href="/llms.txt">llms.txt</a>
         </span>
     </div>
 </footer>
@@ -34,6 +48,10 @@ const year = new Date().getFullYear();
     .copyright {
         font-size: 0.75rem;
         color: var(--text-tertiary);
+    }
+
+    .build-stamp {
+        opacity: 0.75;
     }
 
     .footer-links {
