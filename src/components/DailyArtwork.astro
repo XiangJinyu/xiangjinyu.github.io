@@ -1,0 +1,173 @@
+---
+// A quiet curation: one artwork from Google Arts & Culture.
+// Data: the public JSON used by Google's official "Art Tab" extension.
+// mode="daily"  → same painting for everyone on a given date
+// mode="random" → a new painting every load (used on /404)
+interface Props {
+    mode?: 'daily' | 'random';
+    label?: string;
+}
+const { mode = 'daily', label = "Today's painting" } = Astro.props;
+---
+<section class="artwork" data-mode={mode} hidden>
+    <span class="section-label">{label}</span>
+    <div class="artwork-body">
+        <a class="artwork-frame" target="_blank" rel="noopener">
+            <img alt="" decoding="async" />
+        </a>
+        <div class="artwork-meta mono-font">
+            <p class="artwork-title"></p>
+            <p class="artwork-creator"></p>
+            <p class="artwork-attribution"></p>
+            <a class="artwork-link" target="_blank" rel="noopener">view on Google Arts &amp; Culture →</a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .artwork {
+        max-width: var(--container-width);
+        margin: 0 auto 5rem;
+        padding: 0 1.5rem;
+    }
+
+    .artwork-body {
+        display: grid;
+        grid-template-columns: var(--spine-width) 1fr;
+        gap: var(--spine-gap);
+        align-items: start;
+    }
+
+    .artwork-frame {
+        display: block;
+        background: var(--bg-card);
+        border: 1px solid var(--rule-hairline);
+        padding: 8px;
+        transition: border-color 0.2s;
+    }
+
+    .artwork-frame:hover {
+        border-color: var(--accent-color);
+    }
+
+    .artwork-frame img {
+        display: block;
+        width: 100%;
+        height: auto;
+        filter: saturate(0.92);
+    }
+
+    :global([data-theme='dark']) .artwork-frame img {
+        filter: saturate(0.88) brightness(0.9);
+    }
+
+    .artwork-meta {
+        font-size: 0.78rem;
+        line-height: 1.7;
+        color: var(--text-tertiary);
+        max-width: 44ch;
+        padding-top: 0.2rem;
+    }
+
+    .artwork-title {
+        color: var(--text-secondary);
+        font-style: italic;
+    }
+
+    .artwork-creator {
+        color: var(--text-secondary);
+    }
+
+    .artwork-link {
+        display: inline-block;
+        margin-top: 0.9rem;
+        color: var(--text-tertiary);
+    }
+
+    .artwork-link:hover {
+        color: var(--accent-color);
+    }
+
+    @media (max-width: 768px) {
+        .artwork-body {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .artwork-frame {
+            max-width: 260px;
+        }
+    }
+</style>
+
+<script>
+    const JSON_URL = 'https://www.gstatic.com/culturalinstitute/tabext/imax_2_2.json';
+    const GAC_BASE = 'https://artsandculture.google.com/';
+
+    interface Artwork {
+        title: string;
+        creator: string;
+        attribution: string;
+        image: string;
+        link: string;
+    }
+
+    async function loadArtworks(): Promise<Artwork[]> {
+        const cached = sessionStorage.getItem('gac-artworks');
+        if (cached) return JSON.parse(cached);
+        const res = await fetch(JSON_URL);
+        if (!res.ok) throw new Error(String(res.status));
+        const data = await res.json();
+        try { sessionStorage.setItem('gac-artworks', JSON.stringify(data)); } catch { /* quota: skip */ }
+        return data;
+    }
+
+    function dailyIndex(len: number): number {
+        const d = new Date();
+        const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+        // xorshift-ish scramble so consecutive days don't pick neighbours
+        let x = seed ^ 0x9e3779b9;
+        x ^= x << 13; x ^= x >> 17; x ^= x << 5;
+        return Math.abs(x) % len;
+    }
+
+    async function initArtwork() {
+        const sections = document.querySelectorAll<HTMLElement>('.artwork:not([data-bound])');
+        if (!sections.length) return;
+
+        let artworks: Artwork[];
+        try {
+            artworks = await loadArtworks();
+        } catch {
+            return; // degrade silently: section stays hidden
+        }
+        if (!artworks?.length) return;
+
+        sections.forEach(section => {
+            section.dataset.bound = '1';
+            const idx = section.dataset.mode === 'random'
+                ? Math.floor(Math.random() * artworks.length)
+                : dailyIndex(artworks.length);
+            const art = artworks[idx];
+
+            const img = section.querySelector('img')!;
+            const frame = section.querySelector<HTMLAnchorElement>('.artwork-frame')!;
+            const link = section.querySelector<HTMLAnchorElement>('.artwork-link')!;
+            const href = GAC_BASE + art.link;
+
+            img.src = `${art.image}=s640-rw`;
+            img.alt = `${art.title} — ${art.creator}`;
+            frame.href = href;
+            link.href = href;
+            section.querySelector('.artwork-title')!.textContent = `“${art.title}”`;
+            section.querySelector('.artwork-creator')!.textContent = art.creator;
+            section.querySelector('.artwork-attribution')!.textContent = art.attribution?.trim() ?? '';
+
+            img.addEventListener('load', () => { section.hidden = false; }, { once: true });
+            img.addEventListener('error', () => { section.remove(); }, { once: true });
+        });
+    }
+
+    initArtwork();
+    document.addEventListener('astro:page-load', initArtwork);
+</script>

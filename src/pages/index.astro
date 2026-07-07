@@ -6,6 +6,7 @@ import { formatDate } from '../utils/format';
 import { Content as AboutContent } from '../about.md';
 import { Image } from 'astro:assets';
 import SectionIndex from '../components/SectionIndex.astro';
+import DailyArtwork from '../components/DailyArtwork.astro';
 import avatarImg from '../assets/images/avatar.jpg';
 import aflowImg from '../assets/images/aflow.png';
 import spoImg from '../assets/images/spo.png';
@@ -217,6 +218,8 @@ const personSchema = {
             <a href="/blog">View all posts →</a>
         </div>
     </section>
+
+    <DailyArtwork />
 </Layout>
 
 <style>
