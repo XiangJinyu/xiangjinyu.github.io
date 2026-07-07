@@ -9,6 +9,7 @@ const sections = [
     { id: 'competitions', num: '04', label: 'Projects' },
     { id: 'invited-talks', num: '05', label: 'Talks' },
     { id: 'blog', num: '06', label: 'Writing' },
+    { id: 'gallery', num: '07', label: 'Gallery' },
 ];
 ---
 <nav class="section-index" aria-label="Section index">
@@ -149,6 +150,15 @@ const sections = [
 
         targets.forEach(t => io.observe(t));
         setActive(targets[0].id);
+
+        // The last section may never reach the top band; light it at page bottom
+        window.addEventListener('scroll', () => {
+            const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 40;
+            if (nearBottom) {
+                const last = [...targets].reverse().find(t => !t.hidden);
+                if (last) setActive(last.id);
+            }
+        }, { passive: true });
     }
     initSectionIndex();
     document.addEventListener('astro:page-load', initSectionIndex);

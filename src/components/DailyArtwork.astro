@@ -6,29 +6,50 @@
 interface Props {
     mode?: 'daily' | 'random';
     label?: string;
+    heading?: string;
+    id?: string;
 }
-const { mode = 'daily', label = "Today's painting" } = Astro.props;
+const { mode = 'daily', label = "Today's painting", heading, id } = Astro.props;
 ---
-<section class="artwork" data-mode={mode} hidden>
-    <span class="section-label">{label}</span>
+<section class:list={['artwork', { 'has-heading': !!heading }]} data-mode={mode} id={id} hidden>
+    {heading ? (
+        <header class="section-head">
+            <span class="section-label">{label}</span>
+            <h2>{heading}</h2>
+        </header>
+    ) : (
+        <span class="section-label">{label}</span>
+    )}
     <div class="artwork-body">
-        <a class="artwork-frame" target="_blank" rel="noopener">
-            <img alt="" decoding="async" />
-        </a>
         <div class="artwork-meta mono-font">
             <p class="artwork-title"></p>
             <p class="artwork-creator"></p>
             <p class="artwork-attribution"></p>
-            <a class="artwork-link" target="_blank" rel="noopener">view on Google Arts &amp; Culture →</a>
+            <a class="artwork-link" target="_blank" rel="noopener">view on Google<br />Arts &amp; Culture →</a>
         </div>
+        <a class="artwork-frame" target="_blank" rel="noopener">
+            <img alt="" decoding="async" />
+        </a>
     </div>
 </section>
 
 <style>
     .artwork {
         max-width: var(--container-width);
-        margin: 0 auto 5rem;
+        margin: 0 auto 5.5rem;
         padding: 0 1.5rem;
+        scroll-margin-top: 90px;
+    }
+
+    .section-head {
+        margin-bottom: 2.2rem;
+        padding-bottom: 0.9rem;
+        border-bottom: 1px solid var(--rule-hairline);
+    }
+
+    .section-head h2 {
+        font-size: 1.9rem;
+        font-weight: 600;
     }
 
     .artwork-body {
@@ -38,35 +59,12 @@ const { mode = 'daily', label = "Today's painting" } = Astro.props;
         align-items: start;
     }
 
-    .artwork-frame {
-        display: block;
-        background: var(--bg-card);
-        border: 1px solid var(--rule-hairline);
-        padding: 8px;
-        transition: border-color 0.2s;
-    }
-
-    .artwork-frame:hover {
-        border-color: var(--accent-color);
-    }
-
-    .artwork-frame img {
-        display: block;
-        width: 100%;
-        height: auto;
-        filter: saturate(0.92);
-    }
-
-    :global([data-theme='dark']) .artwork-frame img {
-        filter: saturate(0.88) brightness(0.9);
-    }
-
+    /* Metadata lives in the spine column, like every other section */
     .artwork-meta {
         font-size: 0.78rem;
         line-height: 1.7;
         color: var(--text-tertiary);
-        max-width: 44ch;
-        padding-top: 0.2rem;
+        padding-top: 0.3rem;
     }
 
     .artwork-title {
@@ -76,16 +74,54 @@ const { mode = 'daily', label = "Today's painting" } = Astro.props;
 
     .artwork-creator {
         color: var(--text-secondary);
+        margin-top: 0.3rem;
+    }
+
+    .artwork-attribution {
+        margin-top: 0.3rem;
     }
 
     .artwork-link {
         display: inline-block;
-        margin-top: 0.9rem;
+        margin-top: 1rem;
         color: var(--text-tertiary);
     }
 
     .artwork-link:hover {
         color: var(--accent-color);
+    }
+
+    /* The painting is the content: generous, but bounded */
+    .artwork-frame {
+        display: block;
+        justify-self: start;
+        background: var(--bg-card);
+        border: 1px solid var(--rule-hairline);
+        padding: 10px;
+        transition: border-color 0.2s;
+    }
+
+    .artwork-frame:hover {
+        border-color: var(--accent-color);
+    }
+
+    .artwork-frame img {
+        display: block;
+        max-width: 100%;
+        max-height: 340px;
+        width: auto;
+        height: auto;
+        filter: saturate(0.92);
+        opacity: 0;
+        transition: opacity 0.45s ease;
+    }
+
+    .artwork-frame img.is-loaded {
+        opacity: 1;
+    }
+
+    :global([data-theme='dark']) .artwork-frame img {
+        filter: saturate(0.88) brightness(0.9);
     }
 
     @media (max-width: 768px) {
@@ -94,9 +130,14 @@ const { mode = 'daily', label = "Today's painting" } = Astro.props;
             gap: 1rem;
         }
 
-        .artwork-frame {
-            max-width: 260px;
+        /* On mobile, painting first, caption below — like a plate in a book */
+        .artwork-frame { order: -1; }
+
+        .artwork-frame img {
+            max-height: 300px;
         }
+
+        .artwork-link br { display: none; }
     }
 </style>
 
@@ -155,7 +196,7 @@ const { mode = 'daily', label = "Today's painting" } = Astro.props;
             const link = section.querySelector<HTMLAnchorElement>('.artwork-link')!;
             const href = GAC_BASE + art.link;
 
-            img.src = `${art.image}=s640-rw`;
+            img.src = `${art.image}=s1200-rw`;
             img.alt = `${art.title} — ${art.creator}`;
             frame.href = href;
             link.href = href;
@@ -163,7 +204,10 @@ const { mode = 'daily', label = "Today's painting" } = Astro.props;
             section.querySelector('.artwork-creator')!.textContent = art.creator;
             section.querySelector('.artwork-attribution')!.textContent = art.attribution?.trim() ?? '';
 
-            img.addEventListener('load', () => { section.hidden = false; }, { once: true });
+            img.addEventListener('load', () => {
+                section.hidden = false;
+                requestAnimationFrame(() => img.classList.add('is-loaded'));
+            }, { once: true });
             img.addEventListener('error', () => { section.remove(); }, { once: true });
         });
     }
