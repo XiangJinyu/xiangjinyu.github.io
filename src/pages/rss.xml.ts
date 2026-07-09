@@ -4,7 +4,9 @@ import type { APIContext } from 'astro';
 
 export async function GET(context: APIContext) {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
-  const sorted = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  const sorted = posts
+    .filter(p => !p.slug.endsWith('-zh'))
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
   return rss({
     title: "Jinyu Xiang's Blog",

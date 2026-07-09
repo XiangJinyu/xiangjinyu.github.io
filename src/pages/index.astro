@@ -33,7 +33,9 @@ function enDash(period: string): string {
 const homepageData = await getEntry('data', 'homepage');
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
-const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const sortedPosts = allPosts
+  .filter(p => !p.slug.endsWith('-zh'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const publications = await getCollection('publications');
 const sortedPublications = publications.sort((a, b) => a.data.order - b.data.order);

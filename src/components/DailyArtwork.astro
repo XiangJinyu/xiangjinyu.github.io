@@ -208,7 +208,16 @@ const { mode = 'daily', label = "Today's painting", heading, id } = Astro.props;
                 section.hidden = false;
                 requestAnimationFrame(() => img.classList.add('is-loaded'));
             }, { once: true });
-            img.addEventListener('error', () => { section.remove(); }, { once: true });
+            // One retry at a smaller size (helps transient 429s), then give up quietly
+            let retried = false;
+            img.addEventListener('error', () => {
+                if (!retried) {
+                    retried = true;
+                    setTimeout(() => { img.src = `${art.image}=s640-rw`; }, 1500);
+                } else {
+                    section.remove();
+                }
+            });
         });
     }
 

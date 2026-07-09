@@ -4,7 +4,9 @@ import { getCollection } from 'astro:content';
 import { formatDate } from '../../utils/format';
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
-const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const sortedPosts = allPosts
+  .filter(p => !p.slug.endsWith('-zh'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <Layout title="Blog - Jinyu Xiang">
