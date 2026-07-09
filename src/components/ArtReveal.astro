@@ -1,0 +1,256 @@
+---
+// Hidden painting under the paper: moving the pointer wipes a soft window
+// onto today's artwork (same daily pick as the Gallery section); the paper
+// settles back over it within a few seconds. Desktop pointer only.
+---
+<canvas id="art-reveal" aria-hidden="true"></canvas>
+
+<style>
+    #art-reveal {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    :global([data-theme='dark']) #art-reveal {
+        opacity: 0.34;
+    }
+
+    @media (pointer: coarse), (prefers-reduced-motion: reduce), print {
+        #art-reveal { display: none; }
+    }
+</style>
+
+<script>
+    const JSON_URL = 'https://www.gstatic.com/culturalinstitute/tabext/imax_2_2.json';
+
+    function dailyIndex(len: number): number {
+        const d = new Date();
+        const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+        let x = seed ^ 0x9e3779b9;
+        x ^= x << 13; x ^= x >> 17; x ^= x << 5;
+        return Math.abs(x) % len;
+    }
+
+    async function loadArtworks(): Promise<{ image: string }[]> {
+        const cached = sessionStorage.getItem('gac-artworks');
+        if (cached) return JSON.parse(cached);
+        const res = await fetch(JSON_URL);
+        if (!res.ok) throw new Error(String(res.status));
+        const data = await res.json();
+        try { sessionStorage.setItem('gac-artworks', JSON.stringify(data)); } catch { /* quota */ }
+        return data;
+    }
+
+    async function initArtReveal() {
+        const canvas = document.getElementById('art-reveal') as HTMLCanvasElement | null;
+        if (!canvas || canvas.dataset.bound) return;
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        canvas.dataset.bound = '1';
+
+        let art: HTMLImageElement;
+        try {
+            const artworks = await loadArtworks();
+            if (!artworks?.length) return;
+            const src = artworks[dailyIndex(artworks.length)].image;
+            art = new Image();
+            art.crossOrigin = 'anonymous';
+            await new Promise((ok, err) => {
+                art.onload = ok;
+                art.onerror = err;
+                art.src = `${src}=s1920-rw`;
+            });
+        } catch {
+            return; // no painting today — the paper stays plain
+        }
+
+        const ctx = canvas.getContext('2d')!;
+        const mask = document.createElement('canvas');
+        const mctx = mask.getContext('2d')!;
+        const MASK_SCALE = 0.5;
+
+        let w = 0, h = 0, dpr = 1;
+        function resize() {
+            dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            mask.width = Math.ceil(w * MASK_SCALE);
+            mask.height = Math.ceil(h * MASK_SCALE);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // cover-fit rectangle for the artwork
+        function coverRect() {
+            const cw = canvas.width, ch = canvas.height;
+            const ir = art.naturalWidth / art.naturalHeight;
+            const cr = cw / ch;
+            let dw, dh;
+            if (ir > cr) { dh = ch; dw = ch * ir; }
+            else { dw = cw; dh = cw / ir; }
+            return { x: (cw - dw) / 2, y: (ch - dh) / 2, w: dw, h: dh };
+        }
+
+        const BRUSH = 36;            // brush radius in CSS px
+        const EASE = 0.28;           // lazy-brush: how eagerly the tip chases the pointer
+        const FADE = 0.035;          // wake decay per frame (~1.5s to clear)
+        let target: { x: number; y: number } | null = null;
+        let tip: { x: number; y: number } | null = null;
+        let lastMoveAt = 0;
+        let raf = 0;
+
+        // wake holds the trail only; the head circle is drawn fresh each frame
+        const wake = document.createElement('canvas');
+        const wctx = wake.getContext('2d')!;
+
+        function sizeWake() {
+            wake.width = mask.width;
+            wake.height = mask.height;
+        }
+        sizeWake();
+        window.addEventListener('resize', sizeWake);
+
+        // --- Paint-blob stamps: pre-render a few irregular splotches so the
+        // reveal edge looks like pigment on paper, not a clean circle.
+        // Each blob = wobbly radius outline (sines) + a couple of satellite
+        // droplets near the rim.
+        const BLOBS: HTMLCanvasElement[] = [];
+        (function makeBlobs() {
+            const R = BRUSH * MASK_SCALE;
+            const SIZE = Math.ceil(R * 3.2);
+            for (let b = 0; b < 6; b++) {
+                const cv = document.createElement('canvas');
+                cv.width = cv.height = SIZE;
+                const c = cv.getContext('2d')!;
+                const cx = SIZE / 2, cy = SIZE / 2;
+
+                // wobbly outline: radius modulated by 2–3 sine harmonics
+                const p1 = Math.random() * Math.PI * 2;
+                const p2 = Math.random() * Math.PI * 2;
+                const p3 = Math.random() * Math.PI * 2;
+                const a1 = 0.10 + Math.random() * 0.08;
+                const a2 = 0.05 + Math.random() * 0.06;
+                const a3 = 0.03 + Math.random() * 0.04;
+                c.beginPath();
+                const N = 40;
+                for (let i = 0; i <= N; i++) {
+                    const t = (i / N) * Math.PI * 2;
+                    const rr = R * (1
+                        + a1 * Math.sin(3 * t + p1)
+                        + a2 * Math.sin(5 * t + p2)
+                        + a3 * Math.sin(8 * t + p3));
+                    const x = cx + rr * Math.cos(t);
+                    const y = cy + rr * Math.sin(t);
+                    i === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+                }
+                c.closePath();
+                const g = c.createRadialGradient(cx, cy, 0, cx, cy, R * 1.15);
+                g.addColorStop(0, 'rgba(255,255,255,1)');
+                g.addColorStop(0.62, 'rgba(255,255,255,0.85)');
+                g.addColorStop(1, 'rgba(255,255,255,0)');
+                c.fillStyle = g;
+                c.fill();
+
+                // satellite droplets just outside the rim
+                const drops = 2 + Math.floor(Math.random() * 3);
+                for (let d = 0; d < drops; d++) {
+                    const t = Math.random() * Math.PI * 2;
+                    const dr = R * (1.08 + Math.random() * 0.3);
+                    const sz = R * (0.06 + Math.random() * 0.1);
+                    c.globalAlpha = 0.5 + Math.random() * 0.4;
+                    c.beginPath();
+                    c.arc(cx + dr * Math.cos(t), cy + dr * Math.sin(t), sz, 0, Math.PI * 2);
+                    c.fill();
+                }
+                c.globalAlpha = 1;
+                BLOBS.push(cv);
+            }
+        })();
+
+        let blobSeq = 0;
+        function stamp(c: CanvasRenderingContext2D, x: number, y: number, solid = false) {
+            // the head is redrawn every frame — keep its blob/rotation fixed
+            // so the resting window doesn't shimmer; trail stamps cycle
+            const seq = solid ? 0 : ++blobSeq;
+            const blob = BLOBS[seq % BLOBS.length];
+            const mx = x * MASK_SCALE, my = y * MASK_SCALE;
+            const half = blob.width / 2;
+            c.save();
+            c.translate(mx, my);
+            c.rotate(((seq * 137) % 360) * (Math.PI / 180));
+            c.globalAlpha = solid ? 1 : 0.75;
+            c.drawImage(blob, -half, -half);
+            c.restore();
+        }
+
+        function onMove(e: PointerEvent) {
+            target = { x: e.clientX, y: e.clientY };
+            if (!tip) tip = { ...target };
+            lastMoveAt = performance.now();
+            if (!raf) raf = requestAnimationFrame(tick);
+        }
+
+        function tick() {
+            // 1. fade the whole wake a little — old strokes dissolve in place
+            wctx.globalCompositeOperation = 'destination-out';
+            wctx.fillStyle = `rgba(0,0,0,${FADE})`;
+            wctx.fillRect(0, 0, wake.width, wake.height);
+            wctx.globalCompositeOperation = 'source-over';
+
+            // 2. lazy brush: tip eases toward the pointer, stamping the wake
+            if (target && tip) {
+                const prev = { ...tip };
+                tip.x += (target.x - tip.x) * EASE;
+                tip.y += (target.y - tip.y) * EASE;
+                const dist = Math.hypot(tip.x - prev.x, tip.y - prev.y);
+                const steps = Math.max(1, Math.ceil(dist / (BRUSH * 0.25)));
+                for (let i = 1; i <= steps; i++) {
+                    stamp(wctx, prev.x + ((tip.x - prev.x) * i) / steps, prev.y + ((tip.y - prev.y) * i) / steps);
+                }
+            }
+
+            // 3. mask = wake + a solid head at the tip
+            mctx.clearRect(0, 0, mask.width, mask.height);
+            mctx.drawImage(wake, 0, 0);
+            if (tip) stamp(mctx, tip.x, tip.y, true);
+
+            // 4. composite: artwork clipped by the mask
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const r = coverRect();
+            ctx.drawImage(art, r.x, r.y, r.w, r.h);
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.imageSmoothingEnabled = true;
+            ctx.drawImage(mask, 0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
+
+            // keep animating while the wake dissolves; then park (head stays)
+            if (performance.now() - lastMoveAt < 2500) {
+                raf = requestAnimationFrame(tick);
+            } else {
+                raf = 0;
+            }
+        }
+
+        function clearAll() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            mctx.clearRect(0, 0, mask.width, mask.height);
+            wctx.clearRect(0, 0, wake.width, wake.height);
+            target = null;
+            tip = null;
+        }
+
+        window.addEventListener('pointermove', onMove, { passive: true });
+        window.addEventListener('blur', clearAll);
+        document.documentElement.addEventListener('pointerleave', clearAll);
+    }
+
+    initArtReveal();
+    document.addEventListener('astro:page-load', initArtReveal);
+</script>
