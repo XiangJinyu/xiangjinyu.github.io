@@ -17,6 +17,14 @@ const lang = entry.slug.endsWith('-zh') ? 'zh' : 'en';
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
 const showToc = toc.length >= 3;
 
+// prev/next within published posts of the same language track
+const allPosts = (await getCollection('posts', ({ data }) => !data.draft))
+  .filter(p => p.slug.endsWith('-zh') === entry.slug.endsWith('-zh'))
+  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+const currentIdx = allPosts.findIndex(p => p.slug === entry.slug);
+const prevPost = currentIdx > 0 ? allPosts[currentIdx - 1] : null;
+const nextPost = currentIdx >= 0 && currentIdx < allPosts.length - 1 ? allPosts[currentIdx + 1] : null;
+
 const postSchema = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -66,9 +74,27 @@ const postSchema = {
             </aside>
         )}
 
-        <div class="back-link">
-             <a href="/blog">← Back to all posts</a>
-        </div>
+        <nav class="post-nav mono-font" aria-label="Post navigation">
+            <div class="post-nav-row">
+                {prevPost ? (
+                    <a class="post-nav-item prev" href={`/blog/${prevPost.slug}`}>
+                        <span class="post-nav-dir">← previous</span>
+                        <span class="post-nav-title">{prevPost.data.title}</span>
+                    </a>
+                ) : <span />}
+                {nextPost ? (
+                    <a class="post-nav-item next" href={`/blog/${nextPost.slug}`}>
+                        <span class="post-nav-dir">next →</span>
+                        <span class="post-nav-title">{nextPost.data.title}</span>
+                    </a>
+                ) : <span />}
+            </div>
+            <div class="back-links">
+                <a href="/blog">← all posts</a>
+                <span class="sep">·</span>
+                <a href="/">home</a>
+            </div>
+        </nav>
     </div>
 </Layout>
 
@@ -112,7 +138,32 @@ const postSchema = {
         max-width: var(--measure);
     }
 
-    /* Article body */
+    /* Article body: serif for reading, sized up for Newsreader's small x-height */
+    .content {
+        font-family: var(--font-serif);
+        font-optical-sizing: auto;
+    }
+
+    /* Chinese posts: Newsreader has no CJK glyphs; a serif fallback mix looks
+       worse than clean sans, so keep Inter and a calmer size */
+    :global(html[lang='zh']) .content {
+        font-family: var(--font-sans);
+    }
+
+    :global(html[lang='zh']) .content :global(p),
+    :global(html[lang='zh']) .content :global(ul),
+    :global(html[lang='zh']) .content :global(ol) {
+        font-size: 1.05rem;
+        line-height: 1.85;
+    }
+
+    :global(html[lang='zh']) .content > :global(p:first-of-type)::first-letter {
+        font-size: inherit;
+        float: none;
+        padding: 0;
+        margin: 0;
+    }
+
     .content :global(h2) {
         font-family: var(--font-serif);
         font-size: 1.8rem;
@@ -129,7 +180,18 @@ const postSchema = {
 
     .content :global(p) {
         margin-bottom: 1.5rem;
-        font-size: 1.05rem;
+        font-size: 1.18rem;
+        line-height: 1.75;
+    }
+
+    /* Drop cap on the opening paragraph only */
+    .content > :global(p:first-of-type)::first-letter {
+        font-size: 3.1em;
+        font-weight: 500;
+        float: left;
+        line-height: 0.82;
+        padding-right: 0.09em;
+        margin-top: 0.04em;
     }
 
     .content :global(a) {
@@ -143,6 +205,8 @@ const postSchema = {
     .content :global(ul), .content :global(ol) {
         margin-bottom: 1.5rem;
         padding-left: 1.5rem;
+        font-size: 1.18rem;
+        line-height: 1.75;
     }
 
     .content :global(li) {
@@ -218,10 +282,66 @@ const postSchema = {
         margin: 1rem 0;
     }
 
-    .back-link {
-        margin-top: 4rem;
-        font-family: var(--font-mono);
+    /* Post navigation */
+    .post-nav {
+        margin-top: 4.5rem;
+        padding-top: 1.6rem;
+        border-top: 1px solid var(--rule-hairline);
         font-size: 0.85rem;
+    }
+
+    .post-nav-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 2rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .post-nav-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        max-width: 46%;
+    }
+
+    .post-nav-item.next {
+        text-align: right;
+        margin-left: auto;
+    }
+
+    .post-nav-dir {
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
+    }
+
+    .post-nav-title {
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+
+    .post-nav-item:hover .post-nav-title,
+    .post-nav-item:hover .post-nav-dir {
+        color: var(--accent-color);
+    }
+
+    .back-links {
+        display: flex;
+        gap: 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .back-links a {
+        color: var(--text-tertiary);
+    }
+
+    .back-links a:hover {
+        color: var(--accent-color);
+    }
+
+    .back-links .sep {
+        color: var(--rule-hairline);
     }
 
     /* TOC: fixed sidebar on wide screens, hidden below 1280px */
@@ -281,14 +401,6 @@ const postSchema = {
 
     .content :global(h2), .content :global(h3) {
         scroll-margin-top: 100px;
-    }
-
-    .back-link a {
-        color: var(--text-tertiary);
-    }
-
-    .back-link a:hover {
-        color: var(--accent-color);
     }
 
     @media (max-width: 768px) {
