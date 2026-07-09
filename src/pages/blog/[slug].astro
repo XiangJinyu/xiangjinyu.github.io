@@ -17,8 +17,13 @@ const lang = entry.slug.endsWith('-zh') ? 'zh' : 'en';
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
 const showToc = toc.length >= 3;
 
+// counterpart translation, if it exists (slug convention: foo ↔ foo-zh)
+const everyPost = await getCollection('posts', ({ data }) => !data.draft);
+const counterpartSlug = lang === 'zh' ? entry.slug.replace(/-zh$/, '') : `${entry.slug}-zh`;
+const counterpart = everyPost.find(p => p.slug === counterpartSlug) ?? null;
+
 // prev/next within published posts of the same language track
-const allPosts = (await getCollection('posts', ({ data }) => !data.draft))
+const allPosts = everyPost
   .filter(p => p.slug.endsWith('-zh') === entry.slug.endsWith('-zh'))
   .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
 const currentIdx = allPosts.findIndex(p => p.slug === entry.slug);
@@ -50,6 +55,11 @@ const postSchema = {
                 <div class="tags">
                     {entry.data.tags.map(tag => <span class="tag">{tag}</span>)}
                 </div>
+                {counterpart && (
+                    <a class="lang-switch mono-font" href={`/blog/${counterpart.slug}`}>
+                        {lang === 'zh' ? 'English version →' : '中文版 →'}
+                    </a>
+                )}
             </div>
             <h1 transition:name={`post-title-${entry.slug}`}>{entry.data.title}</h1>
             <p class="abstract">{entry.data.abstract}</p>
@@ -116,6 +126,17 @@ const postSchema = {
         gap: 1rem;
         align-items: center;
         margin-bottom: 1.2rem;
+        flex-wrap: wrap;
+    }
+
+    .lang-switch {
+        font-size: 0.78rem;
+        color: var(--text-tertiary);
+        margin-left: auto;
+    }
+
+    .lang-switch:hover {
+        color: var(--accent-color);
     }
 
     .tags {
