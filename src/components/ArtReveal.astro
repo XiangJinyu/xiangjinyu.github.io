@@ -100,10 +100,12 @@
 
         const BRUSH = 36;            // brush radius in CSS px
         const EASE = 0.28;           // lazy-brush: how eagerly the tip chases the pointer
-        const FADE = 0.035;          // wake decay per frame (~1.5s to clear)
+        const FADE = 0.10;           // proportional wake decay per frame
+        const CLEAR_EPS = 0.02;      // below this coverage the wake is wiped clean
         let target: { x: number; y: number } | null = null;
         let tip: { x: number; y: number } | null = null;
         let lastMoveAt = 0;
+        let wakeInk = 0;             // rough running estimate of wake coverage
         let raf = 0;
 
         // wake holds the trail only; the head circle is drawn fresh each frame
@@ -198,11 +200,19 @@
         }
 
         function tick() {
-            // 1. fade the whole wake a little — old strokes dissolve in place
+            // 1. fade the wake proportionally, then hard-wipe once it's faint.
+            //    destination-out is multiplicative, so alpha never truly hits 0
+            //    (8-bit rounding leaves ghost pixels) — the epsilon wipe below
+            //    guarantees a clean bottom instead of a lingering stain.
             wctx.globalCompositeOperation = 'destination-out';
             wctx.fillStyle = `rgba(0,0,0,${FADE})`;
             wctx.fillRect(0, 0, wake.width, wake.height);
             wctx.globalCompositeOperation = 'source-over';
+            wakeInk *= (1 - FADE);
+            if (wakeInk > 0 && wakeInk < CLEAR_EPS) {
+                wctx.clearRect(0, 0, wake.width, wake.height);
+                wakeInk = 0;
+            }
 
             // 2. lazy brush: tip eases toward the pointer, stamping the wake
             if (target && tip) {
@@ -214,6 +224,7 @@
                 for (let i = 1; i <= steps; i++) {
                     stamp(wctx, prev.x + ((tip.x - prev.x) * i) / steps, prev.y + ((tip.y - prev.y) * i) / steps);
                 }
+                wakeInk = Math.min(1, wakeInk + steps * 0.12);
             }
 
             // 3. mask = wake + a solid head at the tip
@@ -230,8 +241,9 @@
             ctx.drawImage(mask, 0, 0, canvas.width, canvas.height);
             ctx.globalCompositeOperation = 'source-over';
 
-            // keep animating while the wake dissolves; then park (head stays)
-            if (performance.now() - lastMoveAt < 2500) {
+            // run until the wake has actually cleared (not a fixed timeout, so
+            // no ghost frame gets frozen); the head circle stays on the canvas
+            if (wakeInk > 0 || performance.now() - lastMoveAt < 120) {
                 raf = requestAnimationFrame(tick);
             } else {
                 raf = 0;
@@ -242,6 +254,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             mctx.clearRect(0, 0, mask.width, mask.height);
             wctx.clearRect(0, 0, wake.width, wake.height);
+            wakeInk = 0;
             target = null;
             tip = null;
         }
