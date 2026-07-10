@@ -1,17 +1,15 @@
-// Regenerate favicons from the red-dot SVG so every icon slot matches.
+// Regenerate favicons from public/favicon.svg so every icon slot matches.
 // Run: node scripts/generate-favicons.mjs
 import sharp from 'sharp';
-import { writeFile } from 'node:fs/promises';
+import { writeFile, readFile } from 'node:fs/promises';
 
-const SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#fcfbf9"/>
-  <circle cx="16" cy="16" r="8" fill="#c2401f"/>
-</svg>`;
-
-const svgBuf = Buffer.from(SVG);
+const svgBuf = await readFile('public/favicon.svg');
 
 async function png(size) {
-  return sharp(svgBuf, { density: 384 }).resize(size, size).png().toBuffer();
+  return sharp(svgBuf, { density: 384 })
+    .resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .png()
+    .toBuffer();
 }
 
 // Minimal ICO container wrapping a single PNG frame (widely supported).
@@ -46,7 +44,7 @@ async function main() {
   await writeFile('public/images/android-chrome-512x512.png', p512);
   await writeFile('public/images/favicon.ico', pngToIco(p32, 32));
 
-  console.log('  ✓ favicons regenerated from red-dot SVG');
+  console.log('  ✓ favicons regenerated from favicon.svg');
 }
 
 main();
