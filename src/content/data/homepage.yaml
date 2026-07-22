@@ -1,4 +1,6 @@
 news:
+  - date: "2026.06"
+    content: "Released [MiMo-Code](https://github.com/XiaomiMiMo/MiMo-Code) with the Xiaomi MiMo team — a coding agent CLI where models and agents co-evolve, reaching **12K+** Stars."
   - date: "2026.05"
     content: "Joined Xiaomi Mimo-Core as an Algorithm Researcher."
   - date: "2026.02"
@@ -42,6 +44,10 @@ jobs:
     url: "https://y.qq.com/n/ryqq/singer/003uqHad2JLREo"
 
 projects:
+  - date: "2026.06"
+    title: "MiMo-Code"
+    url: "https://github.com/XiaomiMiMo/MiMo-Code"
+    description: "Github 12K+ stars, Core Contributor. A coding agent CLI built at Xiaomi MiMo — where models and agents co-evolve: the agent harness and the underlying model improve each other through use."
   - date: "2026.02"
     title: "Open Research"
     url: "/open-research"
