@@ -22,7 +22,7 @@ interface Props {
 
 const {
 	title,
-	description = "Jinyu Xiang — Algorithm Researcher at Xiaomi Mimo-Core. Research on AI Agents, Self-Evolution, and Foundation Models.",
+	description = "Jinyu Xiang (向劲宇) — Algorithm Researcher at Xiaomi Mimo-Core. Research on AI Agents, Self-Evolution, and Foundation Models.",
 	lang = 'en',
 	ogImage = '/images/og/site.png',
 	schema,
@@ -37,6 +37,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content={description} />
+		<meta name="author" content="Jinyu Xiang (Xiang Jinyu, 向劲宇)" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<ViewTransitions />
